@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - "hitTarget = true;\r\n            Destroy(gameObject);"
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Terrain
+  - Agent
+  - 
+  - FieldUI
+  - 
+  - Projectiles
+  - 
+  - GameUI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - TopTest
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Terrain
+    uniqueID: 666306817
+    locked: 0
+  - name: Agent
+    uniqueID: 3881056237
+    locked: 0
+  - name: FieldUI
+    uniqueID: 1814428987
+    locked: 0
+  - name: Projectiles
+    uniqueID: 2380896299
+    locked: 0
+  - name: GameUI
+    uniqueID: 340914959
+    locked: 0
+  - name: TopTest
+    uniqueID: 3013460319
+    locked: 0
