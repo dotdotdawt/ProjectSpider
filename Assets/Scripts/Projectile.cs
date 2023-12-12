@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
 
     public void SetTarget(Unit newTarget)
     {
-        Debug.Log("Setting target: " + newTarget.name);
+        //Debug.Log("Setting target: " + newTarget.name);
         target = newTarget;
     }
 
