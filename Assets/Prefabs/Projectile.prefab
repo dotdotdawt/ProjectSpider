@@ -215,10 +215,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FrostShimmerParticle
       objectReference: {fileID: 0}
-    - target: {fileID: 5417511061712070390, guid: e9618ce2a94b8d84b9ee76bb510e42ce, type: 3}
-      propertyPath: InitialModule.startSize.scalar
-      value: 0.2
-      objectReference: {fileID: 0}
     - target: {fileID: 8901093969156456520, guid: e9618ce2a94b8d84b9ee76bb510e42ce, type: 3}
       propertyPath: m_RootOrder
       value: 15
