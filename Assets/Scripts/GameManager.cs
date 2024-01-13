@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,29 +16,59 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    public void StartBattle()
-    {
-        SetupUnits();
-    }
-
     void UnitDied(Unit unit)
     {
         units.Remove(unit);
-        SetupUnits();
+        SetupAllTargets();
+        //SetupUnits();
+    }
+
+    void UnitCreated(Unit unit)
+    {
+        //units.Append(unit);
+        //units.Add(unit);
+        GetClosestTarget(unit);
+    }
+
+    public void AddUnit(Unit unit)
+    {
+        if (unit.enabled)
+        {
+            units.Add(unit);
+            GetClosestTarget(unit);
+            unit.OnDeath += () => UnitDied(unit);
+            unit.OnCreate += () => UnitCreated(unit);
+        }
+        
+    }
+
+    void StartBattle()
+    {
+        foreach (Unit unit in units)
+        {
+            GetClosestTarget(unit);
+            unit.battleStarted = true;
+        }
     }
 
     void SetupUnits()
     {
+        // the bug is right here
         foreach (Unit unit in units)
         {
-
-            GetSetTarget(unit);
-            unit.battleStarted = true;
-            unit.OnDeath += () => UnitDied(unit);
+            AddUnit(unit);
         }
     }
 
-    public void GetSetTarget(Unit unit)
+    void SetupAllTargets()
+    {
+        foreach (Unit unit in units)
+        {
+            GetClosestTarget(unit);
+        }
+    }
+
+    public void GetClosestTarget(Unit unit)
     {
         //Debug.Log("Get target fired");
         float shortestDistance = 500f;
@@ -45,7 +76,7 @@ public class GameManager : MonoBehaviour
         {
             if (unit.team == Team.Player)
             {
-                if (loopedUnit.team == Team.Enemy)
+                if (loopedUnit.team == Team.Enemy && !loopedUnit.untargetable)
                 {
                     float newDistance = Vector2.Distance(unit.transform.position, loopedUnit.transform.position);
                     if (newDistance < shortestDistance)
@@ -58,7 +89,7 @@ public class GameManager : MonoBehaviour
 
             if (unit.team == Team.Enemy)
             {
-                if (loopedUnit.team == Team.Player)
+                if (loopedUnit.team == Team.Player && !loopedUnit.untargetable)
                 {
                     float newDistance = Vector2.Distance(unit.transform.position, loopedUnit.transform.position);
                     if (newDistance < shortestDistance)
@@ -71,6 +102,42 @@ public class GameManager : MonoBehaviour
         }
 
         
+    }
+
+
+    public void GetFurthestTarget(Unit unit)
+    {
+        float longestDistance = 0f;
+        foreach (Unit loopedUnit in units)
+        {
+            if (unit.team == Team.Player)
+            {
+                if (loopedUnit.team == Team.Enemy)
+                {
+                    float newDistance = Vector2.Distance(unit.transform.position, loopedUnit.transform.position);
+                    if (newDistance > longestDistance)
+                    {
+                        longestDistance = newDistance;
+                        unit.SetTarget(loopedUnit);
+                    }
+                }
+            }
+
+            if (unit.team == Team.Enemy)
+            {
+                if (loopedUnit.team == Team.Player)
+                {
+                    float newDistance = Vector2.Distance(unit.transform.position, loopedUnit.transform.position);
+                    if (newDistance > longestDistance)
+                    {
+                        longestDistance = newDistance;
+                        unit.SetTarget(loopedUnit);
+                    }
+                }
+            }
+        }
+
+
     }
 
     // Update is called once per frame

@@ -1,18 +1,18 @@
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ability : MonoBehaviour
+[CreateAssetMenu]
+public class Ability : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public new string name;
+    public float cooldownTime;
+    public float activeTime;
+    public float manaToActivate;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Projectile projectilePrefab;
+    public Unit summonedUnitPrefab;
+
+    public virtual void Activate() { }
 }

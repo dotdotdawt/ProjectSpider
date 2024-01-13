@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//[CreateAssetMenu]
 public class Projectile : MonoBehaviour
 {
     public Unit target;
@@ -15,6 +16,7 @@ public class Projectile : MonoBehaviour
 
     public bool isSpinning;
     public float degreesPerSecond = 200f;
+    public float zOffset = 0f;
 
     //public Collider2D collider;
 
@@ -45,7 +47,7 @@ public class Projectile : MonoBehaviour
         Unit unit = hitInfo.GetComponent<Unit>();
         if (unit == target)
         {
-            attacker.DealDamage(attacker.ad);
+            attacker.DealDamage();
             hitTarget = true;
             Destroy(gameObject);
         }
@@ -63,6 +65,20 @@ public class Projectile : MonoBehaviour
         if (isSpinning)
         {
             transform.Rotate(new Vector3(0, 0, degreesPerSecond) * Time.deltaTime);
+        }
+
+
+        if (!isSpinning)
+        {
+            Vector3 targ = target.transform.position;
+            targ.z = 0f;
+
+            Vector3 objectPos = transform.position;
+            targ.x = targ.x - objectPos.x;
+            targ.y = targ.y - objectPos.y;
+
+            float angle = Mathf.Atan2(targ.y, targ.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + zOffset));
         }
 
         if (isHoming)

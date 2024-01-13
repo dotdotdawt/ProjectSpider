@@ -21,10 +21,10 @@ TagManager:
   - 
   - GameUI
   - 
+  - FloatingText
   - 
   - 
-  - 
-  - 
+  - MenuUI
   - 
   - 
   - 
@@ -56,6 +56,12 @@ TagManager:
     locked: 0
   - name: GameUI
     uniqueID: 340914959
+    locked: 0
+  - name: FloatingText
+    uniqueID: 3752372521
+    locked: 0
+  - name: MenuUI
+    uniqueID: 2810449875
     locked: 0
   - name: TopTest
     uniqueID: 3013460319
