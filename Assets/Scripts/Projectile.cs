@@ -11,8 +11,9 @@ public class Projectile : MonoBehaviour
     public Rigidbody2D rb;
     public float projectileSpeed;
     public bool isHoming;
-    public float lifespan;
     public bool hitTarget = false;
+    public bool isSpell = false;
+    public Ability ability;
 
     public bool isSpinning;
     public float degreesPerSecond = 200f;
@@ -26,15 +27,9 @@ public class Projectile : MonoBehaviour
         target = newTarget;
     }
 
-    void OnAwake()
+    void Awake()
     {
-        StartCoroutine(DestroySelfAfterSeconds(lifespan));
-    }
-
-    IEnumerator DestroySelfAfterSeconds(float destroyTime)
-    {
-        yield return new WaitForSeconds(destroyTime);
-        Destroy(gameObject);
+        Destroy(gameObject, 2f);
     }
 
     public void SetAttacker(Unit newAttacker)
@@ -42,32 +37,52 @@ public class Projectile : MonoBehaviour
         attacker = newAttacker;
     }
 
+    public void SetAbilityOrigin(Ability newAbility)
+    {
+        ability = newAbility;
+    }
+
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
         Unit unit = hitInfo.GetComponent<Unit>();
-        if (unit == target)
+        if (unit == null) return;
+        if (isSpell) // spell
         {
-            attacker.DealDamage();
-            hitTarget = true;
-            Destroy(gameObject);
+            if (unit == target)
+            {
+                attacker.DealMagicDamage();
+                attacker.ApplySpellEffect(ability);
+                hitTarget = true;
+                Destroy(gameObject);
+            }          
+        }
+        else // attack
+        {
+            if (unit == target)
+            {
+                attacker.DealPhysicalDamage();
+                hitTarget = true;
+                Destroy(gameObject);
+            }  
         }
     }
 
     void FixedUpdate()
     {
-
+        if (target == null)
+        {
+            Destroy(gameObject);
+            //target = FindObjectOfType<GameManager>().GetClosestTarget(attacker);
+            //target = attacker.target;
+        }
         if (target != null)
         {
             transform.position = Vector2.MoveTowards(this.transform.position, target.transform.position, projectileSpeed * Time.deltaTime);
-            //rb.AddForce(target.transform.position - transform.position * projectileSpeed, ForceMode2D.Impulse);
         }
-
         if (isSpinning)
         {
             transform.Rotate(new Vector3(0, 0, degreesPerSecond) * Time.deltaTime);
         }
-
-
         if (!isSpinning)
         {
             Vector3 targ = target.transform.position;
@@ -79,11 +94,6 @@ public class Projectile : MonoBehaviour
 
             float angle = Mathf.Atan2(targ.y, targ.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + zOffset));
-        }
-
-        if (isHoming)
-        {
-            //rb.AddForce(target.transform.position - transform.position * projectileSpeed);
         }
 
     }

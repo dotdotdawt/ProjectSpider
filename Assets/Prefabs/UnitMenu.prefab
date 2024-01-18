@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
-  statUsed: 7
+  statUsed: 8
 --- !u!1 &1930410664256492880
 GameObject:
   m_ObjectHideFlags: 0
@@ -770,7 +770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
-  statUsed: 5
+  statUsed: 6
 --- !u!1 &2731721844523948673
 GameObject:
   m_ObjectHideFlags: 0
@@ -1327,6 +1327,7 @@ GameObject:
   - component: {fileID: 3213731074463114325}
   - component: {fileID: 9118531160697394031}
   - component: {fileID: 4947436195650523436}
+  - component: {fileID: 3648972973064645210}
   m_Layer: 5
   m_Name: SenseText
   m_TagString: Untagged
@@ -1451,6 +1452,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3648972973064645210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5120842019980711463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2f0ef7f9e8dfe74da489cfb7a0292f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unit: {fileID: 0}
+  statUsed: 5
 --- !u!1 &5415532001646614367
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,7 +2012,7 @@ Transform:
   - {fileID: 519406575804400232}
   - {fileID: 8760582761438349838}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6832281309199204496
 GameObject:
@@ -2232,7 +2247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 0}
-  statUsed: 6
+  statUsed: 7
 --- !u!1 &7724862240276135835
 GameObject:
   m_ObjectHideFlags: 0

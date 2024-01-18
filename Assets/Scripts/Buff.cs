@@ -4,31 +4,78 @@ using UnityEngine;
 
 public class Buff : MonoBehaviour
 {
-    
+    public Stat statUsed;
+    public int amountChange;
+    public float duration;
+    public bool active = true;
+    public bool started = false;
+    public float secondsPassed = 0f;
 
+   
     public enum Stat
     {
-        AttackDamage,
+        Might,
         Mind,
+        Agility,
+        Fortitude,
+        Spirit,
+        Vitality,
+        Sense,
+        Speed,
+        MovementSpeed,
+        AttackDamage,
         Armor,
         MagicResist,
         AttackSpeed,
-        MovementSpeed,
         Health,
         Mana
     }
     //public int statsToChange[];
     // Stat stat, float change, float percentValue = 1f, float flatValue = 0f, float length, string buffName
 
-    // Start is called before the first frame update
-    void Start()
+    public void StartBuff()
     {
+        started = true;
+    }
+
+
+    public void SetStat(Stat stat)
+    {
+        statUsed = stat;
+    }
+
+    public void SetAmount(int amount)
+    {
+        amountChange = amount;
+    }
+
+    public void SetDuration(float newDuration)
+    {
+        duration = newDuration;
+    }
+
+    public void ResetAll()
+    {
+
+    }
+
+    public void Deactivate()
+    {
+        if (duration < secondsPassed)
+        {
+            active = false;
+        }
+    }
+
+    public void Update()
+    {
+        if (!started) return;
+        Deactivate();
+        if (started)
+        {
+            secondsPassed += Time.deltaTime;
+        }
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
