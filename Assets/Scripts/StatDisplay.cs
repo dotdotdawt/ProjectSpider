@@ -13,6 +13,7 @@ public class StatDisplay : MonoBehaviour
         Armor,
         MagicResist,
         AttackSpeed,
+        Sense,
         MovementSpeed,
         Health,
         Mana
@@ -54,7 +55,7 @@ public class StatDisplay : MonoBehaviour
         }
         if (statUsed == Stat.MovementSpeed)
         {
-            this.GetComponent<TextMeshProUGUI>().text = "" + unit.GetMovementSpeedStat();
+            this.GetComponent<TextMeshProUGUI>().text = "" + unit.GetRawMovementSpeed(); // instead of stat to show raw data
         }
         if (statUsed == Stat.Health)
         {
@@ -63,6 +64,10 @@ public class StatDisplay : MonoBehaviour
         if (statUsed == Stat.Mana)
         {
             this.GetComponent<TextMeshProUGUI>().text = "" + unit.GetCurrentMana();
+        }
+        if (statUsed == Stat.Sense)
+        {
+            this.GetComponent<TextMeshProUGUI>().text = "" + unit.GetSenseStat();
         }
     }
 

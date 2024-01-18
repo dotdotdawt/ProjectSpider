@@ -12,7 +12,11 @@ GameObject:
   - component: {fileID: -1461440454047607334}
   - component: {fileID: 167091969403287984}
   - component: {fileID: 292924068946921191}
-  - component: {fileID: 5802885751324424851}
+  - component: {fileID: 6799887595687816360}
+  - component: {fileID: -5251180380689332972}
+  - component: {fileID: 1348791564625650846}
+  - component: {fileID: 7573414395934180336}
+  - component: {fileID: 1953850662314598054}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
@@ -20,23 +24,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2498551917377368130
-Transform:
+--- !u!224 &2498551917377368130
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2121699777405033642}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.205, y: -1.005, z: -3}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2182846149028763107}
   - {fileID: 2770182002346085442}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &-1461440454047607334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,6 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d2d079e05d01f4f9191f109cfe0b7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitName: 
   level: 1
   maxHealth: 0
   currentHealth: 0
@@ -60,26 +70,51 @@ MonoBehaviour:
   spirit: 0
   sense: 0
   speed: 2
+  rawMoveSpeed: 3
   speedStat: 0
   range: 1.1
+  castRange: 5
   mana: 0
   armor: 0
   magicResist: 0
+  bonusMight: 0
+  bonusMind: 0
+  bonusFortitude: 0
+  bonusAgility: 0
+  bonusVitality: 0
+  bonusSpirit: 0
+  bonusSense: 0
+  bonusSpeed: 0
   baseAttackTime: 2
   agilityAttackSpeedConstant: 2
   timeSinceLastAttack: Infinity
+  timeSinceLastCast: Infinity
   attackSpeed: 0.9
   baseAttackDamageConstant: 25
   baseHealthConstant: 250
   baseVitalityConstant: 25
+  baseArmorConstant: 5
+  baseMagicResistConstant: 5
+  baseSpellPowerConstant: 10
+  baseCastingTime: 1
+  minimumMoveSpeedConstant: 2
+  maximumMoveSpeedConstant: 8
+  speedPerPointConstant: 1
+  baseMoveSpeedConstant: 3
   rb: {fileID: 167091969403287984}
   healthBar: {fileID: 1678365601828200580}
   floatingTextPrefab: {fileID: 2250257335892485310, guid: c3e9788879795f24fb1f7e94346944ab, type: 3}
+  buffPrefab: {fileID: 6197191388489739731, guid: 3f4dd45e6c767d849b6c7ee5b2dab30b, type: 3}
   target: {fileID: -1461440454047607334}
   team: 0
   summonedUnitPrefab: {fileID: 0}
   projectilePrefab: {fileID: 0}
   abilities: []
+  buffs: []
+  activeBuffs: []
+  buffCreated: 0
+  physicalDamageColor: {r: 1, g: 0, b: 0, a: 0}
+  magicalDamageColor: {r: 0.37995815, g: 0, b: 1, a: 0}
   initAbility: 0
   battleStarted: 0
   alive: 1
@@ -153,7 +188,42 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 2.14
---- !u!114 &5802885751324424851
+--- !u!58 &6799887595687816360
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121699777405033642}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.8
+--- !u!114 &-5251180380689332972
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,10 +232,59 @@ MonoBehaviour:
   m_GameObject: {fileID: 2121699777405033642}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a06b35f2eed181a41be10dde354381f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c88a020cbd607f489fc74e7025c9dc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 8190600850781446959, guid: a803b63454b971d429b35ff065efaf56, type: 3}
+--- !u!222 &1348791564625650846
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121699777405033642}
+  m_CullTransparentMesh: 1
+--- !u!114 &7573414395934180336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121699777405033642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!225 &1953850662314598054
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121699777405033642}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5397526037162704504
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +339,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5397526037162704504}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -422,6 +541,14 @@ PrefabInstance:
     - target: {fileID: 4969741964156561071, guid: c6827034c5ff2884ca3044cf8736dac7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390064223883190465, guid: c6827034c5ff2884ca3044cf8736dac7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7310618494960901778, guid: c6827034c5ff2884ca3044cf8736dac7, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

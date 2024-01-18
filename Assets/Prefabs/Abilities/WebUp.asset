@@ -15,3 +15,8 @@ MonoBehaviour:
   name: WebUp
   cooldownTime: 20
   activeTime: 0
+  manaToActivate: 0
+  projectilePrefab: {fileID: 0}
+  summonedUnitPrefab: {fileID: 0}
+  VFXSelfBuffPrefab: {fileID: 2261740608863778754, guid: 3d45473eac0231242b3abf8ad604b693, type: 3}
+  VFXSpecialEffect: {fileID: 6270314280029147329, guid: 9d5a9b07208563e4588618e4bff39757, type: 3}

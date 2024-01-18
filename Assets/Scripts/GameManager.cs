@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    void StartBattle()
+    public void StartBattle()
     {
         foreach (Unit unit in units)
         {

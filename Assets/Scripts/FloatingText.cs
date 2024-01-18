@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class FloatingText : MonoBehaviour
 {
-
     public float lifespan = 1.2f;
 
     // Start is called before the first frame update
