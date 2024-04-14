@@ -1,0 +1,61 @@
+.panel_badge {
+    background-color: rgba(65, 34, 38, 0.63);
+    flex-basis: 100%;
+    margin-bottom: 5px;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.panel {
+    background-color: rgba(106, 117, 183, 0.67);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-left-color: rgba(207, 102, 102, 0);
+    border-right-color: rgba(207, 102, 102, 0);
+    border-top-color: rgba(207, 102, 102, 0);
+    border-bottom-color: rgba(207, 102, 102, 0);
+    flex-basis: auto;
+}
+
+.panel_info {
+    flex-grow: 1;
+    flex-basis: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    align-self: stretch;
+    flex-wrap: nowrap;
+}
+
+.text_classic {
+    -unity-font-definition: initial;
+    -unity-font: url('project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=ae6d17fa8e6eae249a726bc316cc5f05&type=3#NotInter-Regular');
+    font-size: 22px;
+    -unity-font-style: bold;
+    color: rgb(236, 236, 236);
+}
+
+.text_small {
+    -unity-font-definition: initial;
+    -unity-font: url('project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=ae6d17fa8e6eae249a726bc316cc5f05&type=3#NotInter-Regular');
+    font-size: 14px;
+    -unity-font-style: bold;
+    color: rgb(236, 236, 236);
+}

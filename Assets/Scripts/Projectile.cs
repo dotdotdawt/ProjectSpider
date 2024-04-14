@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
+
 //[CreateAssetMenu]
 public class Projectile : MonoBehaviour
 {
@@ -46,12 +49,13 @@ public class Projectile : MonoBehaviour
     {
         Unit unit = hitInfo.GetComponent<Unit>();
         if (unit == null) return;
-        if (isSpell) // spell
+        if (isSpell) // spell // 
         {
             if (unit == target)
             {
-                attacker.DealMagicDamage();
-                attacker.ApplySpellEffect(ability);
+                //attacker.DealMagicDamage();
+                attacker.HandleSpell(ability);
+                //attacker.ApplySpellEffect(ability);
                 hitTarget = true;
                 Destroy(gameObject);
             }          
@@ -60,7 +64,7 @@ public class Projectile : MonoBehaviour
         {
             if (unit == target)
             {
-                attacker.DealPhysicalDamage();
+                attacker.Hit();
                 hitTarget = true;
                 Destroy(gameObject);
             }  

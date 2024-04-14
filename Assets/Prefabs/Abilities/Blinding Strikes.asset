@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fcf9e2b0c96f54aab7acb99a988a0d, type: 3}
+  m_Name: Blinding Strikes
+  m_EditorClassIdentifier: 
+  name: Blinding Strikes
+  cooldownTime: 0
+  activeTime: 0
+  manaToActivate: 0
+  level: 1
+  totalLevels: 3
+  chanceToHit: 20
+  damageOnHit: 10
+  projectilePrefab: {fileID: 0}
+  summonedUnitPrefab: {fileID: 0}
+  VFXSelfBuffPrefab: {fileID: 0}
+  VFXSpecialEffect: {fileID: 0}
+  targetAnimationPrefab: {fileID: 8341037202133500295, guid: 7a080dec07821d54d984a98a70c95ed6, type: 3}
+  damageType: 1
+  spellType: 0
+  dmgBoostRatio: 1
+  spellDamage: 10
+  impactAmt: 1
+  impactRatio: 1
+  impactDamage: 10
+  impactStat: 0
+  duration: 4
+  chanceToHitBonusRatio: 1
+  bonusDamageMightRatio: 1
+  bonusDamageMindRatio: 1
+  bonusImpactMightRatio: 1
+  bonusImpactMindRatio: 1
+  bonusDurationRatio: 1
+  selfBuffStat: 0
+  targetBuffStat: 7
+  selfBuffAmount: 0
+  selfBuffDuration: 0
+  targetBuffAmount: 14000000
+  targetBuffDuration: 0
+  selfBuffStatSecondary: 0
+  selfBuffStatTertiary: 0
+  selfBuffAmountSecondary: 0
+  selfBuffAmountTertiary: 0
+  selfBuffDurationSecondary: 0
+  selfBuffDurationTertiary: 0
+  targetBuffStatSecondary: 2
+  targetBuffStatTertiary: 0
+  targetBuffAmountSecondary: 14000000
+  targetBuffAmountTertiary: 0
+  targetBuffDurationSecondary: 0
+  targetBuffDurationTertiary: 0

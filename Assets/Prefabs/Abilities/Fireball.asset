@@ -16,5 +16,40 @@ MonoBehaviour:
   cooldownTime: 0
   activeTime: 0
   manaToActivate: 2
+  level: 1
+  totalLevels: 3
+  chanceToHit: 0
+  damageOnHit: 0
   projectilePrefab: {fileID: 5367382397554002750, guid: fcd7d327d9f41ba45a03a924e8e036dd, type: 3}
   summonedUnitPrefab: {fileID: 0}
+  VFXSelfBuffPrefab: {fileID: 0}
+  VFXSpecialEffect: {fileID: 0}
+  targetAnimationPrefab: {fileID: 0}
+  damageType: 0
+  spellType: 0
+  dmgBoostRatio: 1
+  spellDamage: 50
+  chanceToHitBonusRatio: []
+  bonusDamageMightRatio: []
+  bonusDamageMindRatio: []
+  bonusImpactMightRatio: []
+  bonusImpactMindRatio: []
+  bonusDurationRatio: []
+  selfBuffStat: 0
+  selfBuffAmount: 
+  selfBuffDuration: []
+  targetBuffStat: 0
+  targetBuffAmount: 
+  targetBuffDuration: []
+  selfBuffStatSecondary: 0
+  selfBuffStatTertiary: 0
+  selfBuffAmountSecondary: 
+  selfBuffAmountTertiary: 
+  selfBuffDurationSecondary: []
+  selfBuffDurationTertiary: []
+  targetBuffStatSecondary: 0
+  targetBuffStatTertiary: 0
+  targetBuffAmountSecondary: 
+  targetBuffAmountTertiary: 
+  targetBuffDurationSecondary: []
+  targetBuffDurationTertiary: []

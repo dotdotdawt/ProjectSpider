@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4114613451698505482, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: projectileSpeed
-      value: 3.6
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4114613451698505482, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: degreesPerSecond
@@ -47,18 +47,18 @@ PrefabInstance:
     - target: {fileID: 4189680744024778721, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: b3120e30352bde3429347220081d00bb, type: 3}
+      objectReference: {fileID: 21300000, guid: 8db385278df230a40bb2e174c4fab8ef, type: 3}
     - target: {fileID: 4189680744024778721, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.9716981
       objectReference: {fileID: 0}
     - target: {fileID: 4189680744024778721, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.6956282
       objectReference: {fileID: 0}
     - target: {fileID: 4189680744024778721, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.55460125
       objectReference: {fileID: 0}
     - target: {fileID: 4189680744024778721, guid: bd3e70e610409a546bf972ac04e5b39f, type: 3}
       propertyPath: m_WasSpriteAssigned
