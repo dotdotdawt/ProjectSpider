@@ -69,6 +69,7 @@ MonoBehaviour:
   fortitude: 1
   spirit: 0
   sense: 0
+  wisdom: 0
   speed: 2
   rawMoveSpeed: 3
   speedStat: 0
@@ -85,8 +86,10 @@ MonoBehaviour:
   bonusSpirit: 0
   bonusSense: 0
   bonusSpeed: 0
+  bonusWisdom: 0
   baseAttackTime: 2
   agilityAttackSpeedConstant: 2
+  wisdomCastSpeedConstant: 2
   timeSinceLastAttack: Infinity
   timeSinceLastCast: Infinity
   attackSpeed: 0.9
@@ -101,9 +104,12 @@ MonoBehaviour:
   maximumMoveSpeedConstant: 8
   speedPerPointConstant: 1
   baseMoveSpeedConstant: 3
+  baseSizeMultiplier: 1
   rb: {fileID: 167091969403287984}
   healthBar: {fileID: 1678365601828200580}
   floatingTextPrefab: {fileID: 2250257335892485310, guid: c3e9788879795f24fb1f7e94346944ab, type: 3}
+  floatingTextMagicPrefab: {fileID: 2250257335892485310, guid: b80a81bd74b0b2945bdccfca2d803e32, type: 3}
+  floatingTextCritPrefab: {fileID: 2250257335892485310, guid: 28d6d727d2bf64848bc9c1517a1c1863, type: 3}
   buffPrefab: {fileID: 6197191388489739731, guid: 3f4dd45e6c767d849b6c7ee5b2dab30b, type: 3}
   target: {fileID: -1461440454047607334}
   team: 0
@@ -111,8 +117,6 @@ MonoBehaviour:
   projectilePrefab: {fileID: 0}
   abilities: []
   buffs: []
-  activeBuffs: []
-  buffCreated: 0
   physicalDamageColor: {r: 1, g: 0, b: 0, a: 0}
   magicalDamageColor: {r: 0.37995815, g: 0, b: 1, a: 0}
   initAbility: 0
@@ -120,12 +124,6 @@ MonoBehaviour:
   alive: 1
   canAttack: 1
   untargetable: 0
-  vibrato: 7
-  elasticity: 0.81
-  snapping: 0
-  tamperAttackVector: 0.21
-  tamperAS: 0.3
-  rangedTamper: 0.18
 --- !u!50 &167091969403287984
 Rigidbody2D:
   serializedVersion: 4

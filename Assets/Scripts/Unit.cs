@@ -18,7 +18,18 @@ public enum TextType
     Physical,
     Magical,
     Healing,
-    Shielding
+    Shielding,
+    Critical
+}
+
+public enum TargetType
+{
+    Self,
+    Target,
+    Ally,
+    Allies,
+    Area,
+    Enemies
 }
 
 public class Unit : MonoBehaviour
@@ -40,6 +51,7 @@ public class Unit : MonoBehaviour
     public int fortitude;
     public int spirit;
     public int sense;
+    public float wisdom; // NEW
     public float speed = 5f; // ACTUAL move speed
     public float rawMoveSpeed = 3f;
     public int speedStat; // Need to write logic to clamp speed between 2f-8f
@@ -57,13 +69,16 @@ public class Unit : MonoBehaviour
     public int bonusSpirit;
     public int bonusSense;
     public int bonusSpeed;
+    public float bonusWisdom;
 
     [Header("Constants AD, Armor and Agility Calculation")]
     public float baseAttackTime = 2f; // 2 seconds
     public float agilityAttackSpeedConstant = 2f; // 2%
+    public float wisdomCastSpeedConstant = 2f;
     public float timeSinceLastAttack = Mathf.Infinity;
     public float timeSinceLastCast = Mathf.Infinity;
     public float attackSpeed = 0.9f; // deprecated
+
     public int baseAttackDamageConstant = 24; // base + might
     public int baseHealthConstant = 225;
     public int baseVitalityConstant = 25;
@@ -76,11 +91,15 @@ public class Unit : MonoBehaviour
     public float maximumMoveSpeedConstant = 8f;
     public float speedPerPointConstant = 1f;
     public float baseMoveSpeedConstant = 3f;
+    public int baseSizeMultiplier;
+    //public int baseSizeMultiplier = 1;
 
     [Header("Static Object References")]
     public Rigidbody2D rb;
     public HealthBar healthBar;
     public GameObject floatingTextPrefab;
+    public GameObject floatingTextMagicPrefab;
+    public GameObject floatingTextCritPrefab;
     public Buff buffPrefab;
 
     [Header("Object References")]
@@ -140,12 +159,22 @@ public class Unit : MonoBehaviour
 
     public int GetBasicAttackDamage()
     {
-        return baseAttackDamageConstant + might + bonusMight; // Check for alterations above
+        return baseAttackDamageConstant + GetMightStat(); // Check for alterations above
+    }
+
+    public int GetMightStat()
+    {
+        return might + bonusMight;
     }
 
     public int GetMindStat()
     {
         return mind + baseSpellPowerConstant + bonusMind;
+    }
+
+    public float GetWisdomStat()
+    {
+        return wisdom + bonusWisdom;
     }
 
     public int GetArmorStat()
@@ -173,15 +202,54 @@ public class Unit : MonoBehaviour
         return 1f / GetAttackSpeedTimer();
     }
 
-    public int GetArmorReducedDamage(int rawDamage) // m is decimal
+    public int GetArmorReducedDamage(float rawDamage) // m is decimal
     {
         return Mathf.RoundToInt(System.Convert.ToSingle(100m / (GetArmorStat() + 100m)) * rawDamage);
     }
 
-    public int GetMagicReducedDamage(int rawDamage) // m is decimal
+    public int GetMagicReducedDamage(float rawDamage) // m is decimal
     {
         return Mathf.RoundToInt(System.Convert.ToSingle(100m / (GetMagicResistStat() + 100m)) * rawDamage);
     }
+
+    public void HandleSpell(Ability ability)
+    {
+        Unit _tgt = target;
+        int _dmg = 0;
+        TextType _txt = TextType.Physical; // default
+
+        // Target Types
+        if (ability.spellType == Ability.SpellType.Target) // Single target ability magic
+        {
+            _tgt = target;
+        }
+        if (ability.spellType == Ability.SpellType.Self) // Self only target
+        {
+            _tgt = this;
+        }
+
+        // Damage Types
+        if (ability.damageType == Ability.DamageType.Magical) // Magic
+        {
+            _dmg = Mathf.RoundToInt(
+                GetMagicReducedDamage(
+                    ability.spellDamage + 
+                    (ability.dmgBoostRatio * _tgt.GetMindStat()
+                    )));
+            _txt = TextType.Magical;
+        }
+        if (ability.damageType == Ability.DamageType.Physical) // Physical
+        {
+            _dmg = Mathf.RoundToInt(GetArmorReducedDamage(ability.spellDamage + (ability.dmgBoostRatio * _tgt.GetMightStat())));
+            _txt = TextType.Physical;
+        }
+
+        // Deal it
+        DealDamageToTarget(_dmg, _tgt, _txt);
+        ApplySpellEffect(ability, _tgt);
+    }
+
+
 
     public float GetRawMovementSpeed()
     {
@@ -200,27 +268,29 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void DealPhysicalDamage()
+    public void DealBasicAttackDamage(int damage=0)
     {
         int _rawDmg = GetArmorReducedDamage(GetBasicAttackDamage());
-        if (floatingTextPrefab)
+        if (damage != null)
         {
-            ShowFloatingText(_rawDmg, TextType.Physical);
+            if (damage != 0)
+            {
+                Debug.Log("Incoming damage " + _rawDmg);
+                _rawDmg = GetArmorReducedDamage(damage);
+            }
         }
-        target.currentHealth -= _rawDmg;
-        target.healthBar.SetHealth(target.currentHealth);
+        // Always default target currently
+        DealDamageToTarget(_rawDmg, target, TextType.Physical);
     }
 
-    public void DealMagicDamage()
+    public void DealDamageToTarget(int damage, Unit spTarget, TextType textType)
     {
-        int _rawDmg = GetMagicReducedDamage(GetBasicAttackDamage()+25);
-        
         if (floatingTextPrefab)
         {
-            ShowFloatingText(_rawDmg, TextType.Magical);
+            ShowFloatingText(damage, textType);
         }
-        target.currentHealth -= _rawDmg;
-        target.healthBar.SetHealth(target.currentHealth);
+        spTarget.currentHealth -= damage;
+        spTarget.healthBar.SetHealth(spTarget.currentHealth);
     }
     
 
@@ -231,24 +301,42 @@ public class Unit : MonoBehaviour
 
     public void ShowFloatingText(int damage, TextType textType) // Lots of DOTween customization... if can be made shorter, do it.
     {
-        Vector3 spawnLoc;
-        double _rx = target.transform.position.x + (UnityEngine.Random.Range(-1, 1)*0.1);
-        double _ry = target.transform.position.y + (UnityEngine.Random.Range(-1, 1)*0.1);
-        spawnLoc.x = System.Convert.ToSingle(_rx);
-        spawnLoc.y = System.Convert.ToSingle(_ry);
-        spawnLoc.z = target.transform.position.z;
-        var fText = Instantiate(floatingTextPrefab, spawnLoc, Quaternion.identity, target.transform);
-        fText.GetComponent<TextMeshPro>().text = damage.ToString();
+        GameObject _pfb = null;
+        if (textType == TextType.Physical)
+        {
+            _pfb = floatingTextPrefab;
+        }
+        if (textType == TextType.Magical)
+        {
+            _pfb = floatingTextMagicPrefab;
+        }
+        if (textType == TextType.Critical)
+        {
+            _pfb = floatingTextCritPrefab;
+        }
 
-        // moving
-        fText.transform.DOMoveY((fText.transform.position.y+1), 1f).SetEase(Ease.InSine);
-        var sequence = DOTween.Sequence();
-        double _x = fText.transform.localScale.x * 2.5;
-        double _y = fText.transform.localScale.y * 2.5;
-        sequence.Append(fText.transform.DOScaleX(Math.Abs(System.Convert.ToSingle(_x)), 0.5f).SetEase(Ease.InOutSine));
-        sequence.Join(fText.transform.DOScaleY(Math.Abs(System.Convert.ToSingle(_y)), 0.5f).SetEase(Ease.InOutSine));
-        sequence.Append(fText.transform.DOScaleX(0, 0.5f).SetEase(Ease.InOutSine));
-        sequence.Join(fText.transform.DOScaleY(0, 0.5f).SetEase(Ease.InOutSine));
+        if (_pfb != null)
+        {
+            Vector3 spawnLoc;
+            double _rx = target.transform.position.x + (UnityEngine.Random.Range(-1, 1) * 0.1);
+            double _ry = target.transform.position.y + (UnityEngine.Random.Range(-1, 1) * 0.1);
+            spawnLoc.x = System.Convert.ToSingle(_rx);
+            spawnLoc.y = System.Convert.ToSingle(_ry);
+            spawnLoc.z = target.transform.position.z;
+            var fText = Instantiate(_pfb, spawnLoc, Quaternion.identity, target.transform);
+            fText.GetComponent<TextMeshPro>().text = damage.ToString();
+
+            // moving
+            fText.transform.DOMoveY((fText.transform.position.y + 1), 1f).SetEase(Ease.InSine);
+            var sequence = DOTween.Sequence();
+            double _x = fText.transform.localScale.x * 4;
+            double _y = fText.transform.localScale.y * 4;
+            sequence.Append(fText.transform.DOScaleX(Math.Abs(System.Convert.ToSingle(_x)), 0.8f).SetEase(Ease.InOutSine));
+            sequence.Join(fText.transform.DOScaleY(Math.Abs(System.Convert.ToSingle(_y)), 0.8f).SetEase(Ease.InOutSine));
+            sequence.Append(fText.transform.DOScaleX(0, 0.8f).SetEase(Ease.InOutSine));
+            sequence.Join(fText.transform.DOScaleY(0, 0.8f).SetEase(Ease.InOutSine));
+        }
+        
     }
 
     private bool InAttackRangeOfTarget()
@@ -271,7 +359,7 @@ public class Unit : MonoBehaviour
 
     private void PunchAnimation()
     {
-        if (range >= 1.8f) // is ranged
+        if (range >= 1.5f * baseSizeMultiplier) // is ranged
         {
             transform.DOPunchPosition(target.transform.position * tamperAttackVector - transform.position * tamperAttackVector * rangedTamper, 
                 attackSpeed * tamperAS * rangedTamper, vibrato, elasticity * rangedTamper, snapping);
@@ -290,10 +378,11 @@ public class Unit : MonoBehaviour
         return AS;
     }
 
-    public float GetCastTimer() // using agility currently
+    public float GetCastTimer() // using WISDOM currently
     {
         int bonuses = 0;
-        return baseCastingTime / ((agility * agilityAttackSpeedConstant + bonuses) / 100 + 1);
+        return baseCastingTime / ((wisdom * wisdomCastSpeedConstant + bonuses) / 100 + 1);
+        //return baseCastingTime / ((agility * agilityAttackSpeedConstant + bonuses) / 100 + 1);
     }
 
     public void HandleBuffs()
@@ -302,8 +391,10 @@ public class Unit : MonoBehaviour
 
         for (int i = 0; i < buffs.Count; i++)
         {
-            if (buffs[i] == null) return;
-
+            if (buffs[i] == null) 
+            {
+                return;
+            }
             if (buffs[i] != null)
             {
                 if (!buffs[i].active)
@@ -315,7 +406,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void CreateBuff(int amount, float duration, Buff.Stat stat, Ability fromAbility)
+    public void CreateBuff(int amount, float duration, Buff.Stat stat, Ability ability)
     {
         Buff newBuff = Instantiate(buffPrefab, transform.position, transform.rotation);
         newBuff.SetAmount(amount);
@@ -325,10 +416,12 @@ public class Unit : MonoBehaviour
         AddBuff(newBuff);
         newBuff.StartBuff(); // not great but redo later
 
+        Debug.Log("Buff created from " + ability.name);
+
         // Make and destroy buff VFX
-        if (fromAbility && fromAbility.VFXSelfBuffPrefab != null)
+        if (ability.name == "WebUp" && ability.VFXSelfBuffPrefab != null)
         {
-            GameObject _vfxWebUp = Instantiate(fromAbility.VFXSelfBuffPrefab, transform.position, transform.rotation);
+            GameObject _vfxWebUp = Instantiate(ability.VFXSelfBuffPrefab, transform.position, transform.rotation);
             _vfxWebUp.transform.parent = transform;
             Destroy(_vfxWebUp, duration);
         }
@@ -337,7 +430,7 @@ public class Unit : MonoBehaviour
 
     public void AddBuff(Buff buff)
     {
-        Debug.Log("Adding " + (buff.amountChange, buff.statUsed, name));
+        //Debug.Log("Adding " + (buff.amountChange, buff.statUsed, name));
         if (buff.statUsed == Buff.Stat.Might)
         {
             bonusMight += buff.amountChange;
@@ -370,11 +463,15 @@ public class Unit : MonoBehaviour
         {
             bonusSpeed += buff.amountChange;
         }
+        if (buff.statUsed == Buff.Stat.Wisdom)
+        {
+            bonusWisdom += buff.amountChange;
+        }
     }
 
     public void RemoveBuff(Buff buff)
     {
-        Debug.Log("Removing " + (buff.amountChange, buff.statUsed, name));
+        //Debug.Log("Removing " + (buff.amountChange, buff.statUsed, name));
         if (buff.statUsed == Buff.Stat.Might)
         {
             bonusMight -= buff.amountChange;
@@ -407,6 +504,10 @@ public class Unit : MonoBehaviour
         {
             bonusSpeed -= buff.amountChange;
         }
+        if (buff.statUsed == Buff.Stat.Wisdom)
+        {
+            bonusWisdom -= buff.amountChange;
+        }
         var parentObject = buff.GetComponentInParent<Transform>();
         Destroy(parentObject.gameObject);
         Destroy(buff);
@@ -419,6 +520,7 @@ public class Unit : MonoBehaviour
             if (buffs[i] != null)
             {
                 RemoveBuff(buffs[i]);
+                buffs.Remove(buffs[i]);
             }
         }
     }
@@ -443,8 +545,8 @@ public class Unit : MonoBehaviour
             Destroy(webUpStrand, 5);
 
             // buff
-            CreateBuff(30, 2f, Buff.Stat.Might, abilityInstance);
-            CreateBuff(50, 2f, Buff.Stat.Speed, abilityInstance);
+            CreateBuff(30, 5f, Buff.Stat.Might, abilityInstance);
+            CreateBuff(50, 5f, Buff.Stat.Speed, abilityInstance);
             StatsUpdate();
 
             // animation
@@ -464,9 +566,23 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void ApplySpellEffect(Ability fromAbility)
+    public void ApplySpellEffect(Ability ability, Unit fxTarget)
     {
-        target.CreateBuff(-40, 5, Buff.Stat.Speed, fromAbility);
+        Debug.Log("ApplyingSpellEffect from ability" + ability.name);
+        //target.CreateBuff(-40, 5, Buff.Stat.Speed, fromAbility);
+        //target.CreateBuff(-20, 5, Buff.Stat.Armor, fromAbility);
+        int statAmt = GetMindStat();
+        float bonusAmt = ability.impactRatio * statAmt;
+        int _amt = Mathf.RoundToInt(ability.impactAmt + bonusAmt);
+        //float _amt = ability.impactAmt + Mathf.RoundToInt((ability.impactRatio * GetMindStat())); // negative number
+
+        float _dur = ability.duration;
+        //float _dur = ability.duration + Mathf.RoundToInt((ability.bonusDurationRatio * GetMindStat()));
+
+        Buff.Stat _stat = Buff.Stat.Fortitude;
+        //Stat _stat = ability.impactStat;
+
+        fxTarget.CreateBuff(_amt, _dur, _stat, ability);
     }
 
     public void LaunchAbilityProjectile(Projectile projectilePrefab, Ability fromAbility) // Just makes the projectile and sends it
@@ -507,6 +623,12 @@ public class Unit : MonoBehaviour
         GetComponentInChildren<SpriteRenderer>().flipX = !GetComponentInChildren<SpriteRenderer>().flipX;
     }
   
+    public void Hit()
+    {
+        HandleOnHit();
+        DealBasicAttackDamage();
+    }
+    
     void AttackBehavior()
     {
         if (!canAttack) { return; }
@@ -518,14 +640,14 @@ public class Unit : MonoBehaviour
         }
         mana += 1;
         timeSinceLastAttack = 0f;
-        if (range >= 1.5f)
+        if (range >= 1.5f * baseSizeMultiplier)
         {
             RangedAttack();
             PunchAnimation();
         }
         else
         {
-            DealPhysicalDamage();
+            Hit();
             PunchAnimation();
         }
     }
@@ -550,6 +672,98 @@ public class Unit : MonoBehaviour
     public void SetTarget(Unit newTarget)
     {
         target = newTarget;
+    }
+
+    public int GetRoll()
+    {
+        return UnityEngine.Random.Range(1, 100);
+    }
+
+    public float GetChanceToHitBonus(float ratio)
+    {
+        return GetSenseStat() * ratio;
+    }
+
+    public void HandleOnHit()
+    {
+        for (int i = 0; i < abilities.Length; i++)
+        {
+            if (abilities[i] != null)
+            {
+                if (abilities[i].name == "Acid Fangs")
+                {
+                    float bonusChance = GetChanceToHitBonus(abilities[i].chanceToHitBonusRatio);
+                    float hitChance = abilities[i].chanceToHit + bonusChance;
+                    int rollResult = GetRoll();
+
+                    if (rollResult > 100-hitChance)
+                    {
+                        int debuffFactor;
+                        //Debug.Log("Acid Fangs triggered " + abilities[i].name);
+                        if (abilities[i].isDebuff) { debuffFactor = -1; } 
+                        else { debuffFactor = 1; }
+
+                        // dmg
+                        int _dmg = Mathf.RoundToInt(
+                            abilities[i].bonusDamageMightRatio * GetMightStat() +
+                            abilities[i].bonusDamageMindRatio * GetMindStat() +
+                            abilities[i].damageOnHit);
+
+                        // impact
+                        int _imp = Mathf.RoundToInt(
+                            abilities[i].bonusImpactMindRatio * GetMindStat() +
+                            abilities[i].targetBuffAmount);
+
+                        // duration
+                        float _dur = Mathf.RoundToInt(
+                            abilities[i].targetBuffDuration +
+                            abilities[i].bonusDurationRatio * GetMindStat());
+
+                        // Create
+                        target.CreateBuff(_imp * debuffFactor, _dur, Buff.Stat.Armor, abilities[i]);
+
+                        // Handlers
+                        DealBasicAttackDamage(_dmg);
+                        HandleSpell(abilities[i]);
+
+                        // x
+                        Debug.Log("Acid Fangs hit for " + _dmg);
+                        GameObject _anim = Instantiate(abilities[i].targetAnimationPrefab, target.transform.position, target.transform.rotation);
+                        Destroy(_anim, 0.8f);
+
+                    }
+                }
+                if (abilities[i].name == "Blinding Strikes")
+                {
+                    float hitChance = abilities[i].chanceToHit + GetChanceToHitBonus(abilities[i].chanceToHitBonusRatio);
+                    int rollResult = GetRoll();
+                    if (rollResult > 100 - hitChance)
+                    {
+                        
+                        int _dmg = Mathf.RoundToInt(
+                            (abilities[i].bonusDamageMightRatio * GetMightStat()) +
+                            (abilities[i].bonusDamageMindRatio * GetMindStat()) +
+                            abilities[i].damageOnHit);
+                        int _imp = Mathf.RoundToInt(
+                            (abilities[i].bonusImpactMindRatio * GetMindStat()) + 
+                            abilities[i].targetBuffAmount);
+                        float _dur = (
+                            (abilities[i].bonusDurationRatio * GetMindStat()) + 
+                            abilities[i].targetBuffDuration);
+
+                        target.CreateBuff(_imp * -1, _dur, Buff.Stat.Sense, abilities[i]);
+                        //DealPhysicalDamage(damageDealt);
+                        DealBasicAttackDamage();
+                        HandleSpell(abilities[i]);
+                        Debug.Log("Blinding Strikes hit for " + _dmg);
+
+                        GameObject _anim = Instantiate(abilities[i].targetAnimationPrefab, target.transform.position, target.transform.rotation);
+                        Destroy(_anim, 0.8f);
+                    }
+
+                }
+            }
+        }
     }
 
     public void HandleAbilities() // Handles middle of battle abilities based on mana

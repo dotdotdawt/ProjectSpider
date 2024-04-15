@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Buff : MonoBehaviour
 {
     public Stat statUsed;
@@ -14,6 +16,7 @@ public class Buff : MonoBehaviour
    
     public enum Stat
     {
+        None,
         Might,
         Mind,
         Agility,
@@ -28,7 +31,8 @@ public class Buff : MonoBehaviour
         MagicResist,
         AttackSpeed,
         Health,
-        Mana
+        Mana,
+        Wisdom
     }
     //public int statsToChange[];
     // Stat stat, float change, float percentValue = 1f, float flatValue = 0f, float length, string buffName

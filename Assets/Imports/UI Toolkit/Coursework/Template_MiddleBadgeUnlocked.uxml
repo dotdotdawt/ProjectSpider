@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="MiddleBadge" style="background-color: rgba(0, 0, 0, 0); -unity-text-align: upper-left; align-items: center; justify-content: center; align-self: center;">
+        <ui:VisualElement name="CompleteIcon" style="flex-grow: 1; background-image: resource(&apos;img/icon/fatcat&apos;); background-color: rgba(255, 255, 255, 0); width: 100px; height: 100px; -unity-background-scale-mode: scale-to-fit;" />
+        <ui:Label tabindex="-1" text="COMPLETE!" display-tooltip-when-elided="true" name="CompleteLabel" class="text_small" />
+    </ui:VisualElement>
+</ui:UXML>

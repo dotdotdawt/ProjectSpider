@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fcf9e2b0c96f54aab7acb99a988a0d, type: 3}
+  m_Name: Blinding Strikes
+  m_EditorClassIdentifier: 
+  name: Blinding Strikes
+  spellType: 0
+  abilType: 2
+  cooldownTime: 0
+  activeTime: 0
+  manaToActivate: 0
+  chanceToHit: 20
+  damageOnHit: 10
+  summonedUnitPrefab: {fileID: 0}
+  damageType: 1
+  spellDamage: 10
+  duration: 4
+  bonusDurationRatio: 1
+  dmgBoostRatio: 1
+  bonusDamageMightRatio: 1
+  bonusDamageMindRatio: 1
+  chanceToHitBonusRatio: 1
+  buffTarget: 1
+  impactStat: 7
+  impactAmt: 20
+  impactRatio: 1
+  impactDamage: 10
+  bonusImpactMightRatio: 1
+  bonusImpactMindRatio: 1
+  targetBuffAmount: 20
+  targetBuffDuration: 4
+  isDebuff: 1
+  buffTargetA: 1
+  buffStatA: 10
+  buffAmountA: 25
+  buffDurationA: 4
+  isDebuffA: 1
+  buffTargetB: 0
+  buffStatB: 3
+  buffAmountB: 15
+  buffDurationB: 4
+  buffStatC: 0
+  buffAmountC: 0
+  buffDurationC: 0
+  projectilePrefab: {fileID: 0}
+  VFXSelfBuffPrefab: {fileID: 0}
+  VFXSpecialEffect: {fileID: 0}
+  targetAnimationPrefab: {fileID: 8341037202133500295, guid: eeb7827157ca28142916a4dfc8b6cf07, type: 3}

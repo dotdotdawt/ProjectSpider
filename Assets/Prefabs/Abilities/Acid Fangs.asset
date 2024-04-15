@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82fcf9e2b0c96f54aab7acb99a988a0d, type: 3}
+  m_Name: Acid Fangs
+  m_EditorClassIdentifier: 
+  name: Acid Fangs
+  spellType: 0
+  abilType: 2
+  cooldownTime: 0
+  activeTime: 0
+  manaToActivate: 0
+  chanceToHit: 15
+  damageOnHit: 20
+  summonedUnitPrefab: {fileID: 0}
+  damageType: 0
+  spellDamage: 20
+  duration: 4
+  bonusDurationRatio: 0.05
+  dmgBoostRatio: 1
+  bonusDamageMightRatio: 1
+  bonusDamageMindRatio: 1
+  chanceToHitBonusRatio: 0.5
+  buffTarget: 1
+  impactStat: 4
+  impactAmt: 20
+  impactRatio: 1
+  impactDamage: 20
+  bonusImpactMightRatio: 0
+  bonusImpactMindRatio: 1
+  targetBuffAmount: 20
+  targetBuffDuration: 5
+  isDebuff: 1
+  buffTargetA: 0
+  buffStatA: 0
+  buffAmountA: 0
+  buffDurationA: 0
+  isDebuffA: 0
+  buffTargetB: 0
+  buffStatB: 0
+  buffAmountB: 0
+  buffDurationB: 0
+  buffStatC: 0
+  buffAmountC: 0
+  buffDurationC: 0
+  projectilePrefab: {fileID: 0}
+  VFXSelfBuffPrefab: {fileID: 0}
+  VFXSpecialEffect: {fileID: 5553670732918543137, guid: 17f8041b27ddee143a9e444c5f204171, type: 3}
+  targetAnimationPrefab: {fileID: 8341037202133500295, guid: 7a080dec07821d54d984a98a70c95ed6, type: 3}

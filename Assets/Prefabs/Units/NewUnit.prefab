@@ -71,8 +71,8 @@ MonoBehaviour:
   speed: 1
   rawMoveSpeed: 300
   speedStat: 1
-  range: 1
-  castRange: 5
+  range: 125
+  castRange: 500
   mana: 0
   armor: 0
   magicResist: 0
@@ -96,8 +96,8 @@ MonoBehaviour:
   baseMagicResistConstant: 5
   baseSpellPowerConstant: 10
   baseCastingTime: 1
-  minimumMoveSpeedConstant: 2
-  maximumMoveSpeedConstant: 8
+  minimumMoveSpeedConstant: 200
+  maximumMoveSpeedConstant: 800
   speedPerPointConstant: 1
   baseMoveSpeedConstant: 3
   rb: {fileID: 8791297461246197487}
@@ -110,8 +110,6 @@ MonoBehaviour:
   projectilePrefab: {fileID: 0}
   abilities: []
   buffs: []
-  activeBuffs: []
-  buffCreated: 0
   physicalDamageColor: {r: 0, g: 0, b: 0, a: 0}
   magicalDamageColor: {r: 0, g: 0, b: 0, a: 0}
   initAbility: 0

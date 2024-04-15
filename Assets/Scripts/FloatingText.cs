@@ -6,7 +6,7 @@ using System;
 
 public class FloatingText : MonoBehaviour
 {
-    public float lifespan = 1.2f;
+    public float lifespan = 1.6f;
 
     // Start is called before the first frame update
     void Start()

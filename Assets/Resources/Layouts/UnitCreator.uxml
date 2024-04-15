@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="UnitPanel" src="project://database/Assets/Resources/Layouts/UnitPanel.uxml?fileID=9197481963319205126&amp;guid=433bd830f749a1b4290e8e96dd9cc9c3&amp;type=3#UnitPanel" />
+    <ui:VisualElement style="flex-grow: 0; background-color: rgba(9, 16, 29, 0.9); background-image: none; justify-content: center; align-self: center; align-items: center; width: 300px; height: 500px;">
+        <ui:VisualElement name="Background" style="flex-grow: 1; background-color: rgba(123, 133, 149, 0.8); border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; border-top-left-radius: 22px; border-bottom-left-radius: 22px; border-top-right-radius: 22px; border-bottom-right-radius: 22px; margin-left: 6px; margin-right: 6px; margin-top: 6px; margin-bottom: 6px;">
+            <ui:VisualElement name="UnitSelector" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
+                <ui:ListView focusable="true" name="UnitsList" style="flex-basis: 100%; flex-grow: 1; display: none;" />
+                <ui:Instance template="UnitPanel" name="UnitPanel" />
+                <ui:Instance template="UnitPanel" name="UnitPanel" />
+                <ui:Instance template="UnitPanel" name="UnitPanel" />
+                <ui:Instance template="UnitPanel" name="UnitPanel" />
+                <ui:Instance template="UnitPanel" name="UnitPanel" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
