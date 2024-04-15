@@ -13,43 +13,45 @@ MonoBehaviour:
   m_Name: IceWeb
   m_EditorClassIdentifier: 
   name: Ice Web
+  spellType: 0
+  abilType: 3
   cooldownTime: 15
   activeTime: 0
   manaToActivate: 0
-  level: 1
-  totalLevels: 3
   chanceToHit: 0
   damageOnHit: 0
-  projectilePrefab: {fileID: 8649018845039222880, guid: 4c2eee3a9a2f3a9479e74293f1a42776, type: 3}
   summonedUnitPrefab: {fileID: 0}
+  damageType: 0
+  spellDamage: 20
+  duration: 0
+  bonusDurationRatio: 0
+  dmgBoostRatio: 1
+  bonusDamageMightRatio: 0
+  bonusDamageMindRatio: 1
+  chanceToHitBonusRatio: 0
+  buffTarget: 1
+  impactStat: 8
+  impactAmt: 40
+  impactRatio: 1
+  impactDamage: 20
+  bonusImpactMightRatio: 0
+  bonusImpactMindRatio: 1
+  targetBuffAmount: 40
+  targetBuffDuration: 5
+  isDebuff: 1
+  buffTargetA: 1
+  buffStatA: 3
+  buffAmountA: 20
+  buffDurationA: 5
+  isDebuffA: 1
+  buffTargetB: 0
+  buffStatB: 0
+  buffAmountB: 0
+  buffDurationB: 0
+  buffStatC: 0
+  buffAmountC: 0
+  buffDurationC: 0
+  projectilePrefab: {fileID: 8649018845039222880, guid: 4c2eee3a9a2f3a9479e74293f1a42776, type: 3}
   VFXSelfBuffPrefab: {fileID: 5553670732918543137, guid: 89eb5c8d5f1f8e34bb3ca6f923dccbdc, type: 3}
   VFXSpecialEffect: {fileID: 0}
   targetAnimationPrefab: {fileID: 0}
-  damageType: 0
-  spellType: 0
-  dmgBoostRatio: 1
-  spellDamage: 10
-  chanceToHitBonusRatio: []
-  bonusDamageMightRatio: []
-  bonusDamageMindRatio: []
-  bonusImpactMightRatio: []
-  bonusImpactMindRatio: []
-  bonusDurationRatio: []
-  selfBuffStat: 0
-  selfBuffAmount: 
-  selfBuffDuration: []
-  targetBuffStat: 0
-  targetBuffAmount: 
-  targetBuffDuration: []
-  selfBuffStatSecondary: 0
-  selfBuffStatTertiary: 0
-  selfBuffAmountSecondary: 
-  selfBuffAmountTertiary: 
-  selfBuffDurationSecondary: []
-  selfBuffDurationTertiary: []
-  targetBuffStatSecondary: 0
-  targetBuffStatTertiary: 0
-  targetBuffAmountSecondary: 
-  targetBuffAmountTertiary: 
-  targetBuffDurationSecondary: []
-  targetBuffDurationTertiary: []

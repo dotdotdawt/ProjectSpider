@@ -27,29 +27,35 @@ MonoBehaviour:
   targetAnimationPrefab: {fileID: 0}
   damageType: 0
   spellType: 0
+  abilType: 3
   dmgBoostRatio: 1
   spellDamage: 50
-  chanceToHitBonusRatio: []
-  bonusDamageMightRatio: []
-  bonusDamageMindRatio: []
-  bonusImpactMightRatio: []
-  bonusImpactMindRatio: []
-  bonusDurationRatio: []
+  impactAmt: 0
+  impactRatio: 0
+  impactDamage: 0
+  impactStat: 0
+  duration: 0
+  chanceToHitBonusRatio: 0
+  bonusDamageMightRatio: 0
+  bonusDamageMindRatio: 0
+  bonusImpactMightRatio: 0
+  bonusImpactMindRatio: 0
+  bonusDurationRatio: 0
   selfBuffStat: 0
-  selfBuffAmount: 
-  selfBuffDuration: []
   targetBuffStat: 0
-  targetBuffAmount: 
-  targetBuffDuration: []
+  selfBuffAmount: 0
+  selfBuffDuration: 0
+  targetBuffAmount: 0
+  targetBuffDuration: 0
   selfBuffStatSecondary: 0
   selfBuffStatTertiary: 0
-  selfBuffAmountSecondary: 
-  selfBuffAmountTertiary: 
-  selfBuffDurationSecondary: []
-  selfBuffDurationTertiary: []
+  selfBuffAmountSecondary: 0
+  selfBuffAmountTertiary: 0
+  selfBuffDurationSecondary: 0
+  selfBuffDurationTertiary: 0
   targetBuffStatSecondary: 0
   targetBuffStatTertiary: 0
-  targetBuffAmountSecondary: 
-  targetBuffAmountTertiary: 
-  targetBuffDurationSecondary: []
-  targetBuffDurationTertiary: []
+  targetBuffAmountSecondary: 0
+  targetBuffAmountTertiary: 0
+  targetBuffDurationSecondary: 0
+  targetBuffDurationTertiary: 0

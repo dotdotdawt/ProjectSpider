@@ -78,6 +78,7 @@ public class Unit : MonoBehaviour
     public float timeSinceLastAttack = Mathf.Infinity;
     public float timeSinceLastCast = Mathf.Infinity;
     public float attackSpeed = 0.9f; // deprecated
+
     public int baseAttackDamageConstant = 24; // base + might
     public int baseHealthConstant = 225;
     public int baseVitalityConstant = 25;
@@ -230,7 +231,11 @@ public class Unit : MonoBehaviour
         // Damage Types
         if (ability.damageType == Ability.DamageType.Magical) // Magic
         {
-            _dmg = Mathf.RoundToInt(GetMagicReducedDamage(ability.spellDamage + (ability.dmgBoostRatio * _tgt.GetMindStat())));
+            _dmg = Mathf.RoundToInt(
+                GetMagicReducedDamage(
+                    ability.spellDamage + 
+                    (ability.dmgBoostRatio * _tgt.GetMindStat()
+                    )));
             _txt = TextType.Magical;
         }
         if (ability.damageType == Ability.DamageType.Physical) // Physical
@@ -401,7 +406,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void CreateBuff(int amount, float duration, Buff.Stat stat, Ability fromAbility)
+    public void CreateBuff(int amount, float duration, Buff.Stat stat, Ability ability)
     {
         Buff newBuff = Instantiate(buffPrefab, transform.position, transform.rotation);
         newBuff.SetAmount(amount);
@@ -411,10 +416,12 @@ public class Unit : MonoBehaviour
         AddBuff(newBuff);
         newBuff.StartBuff(); // not great but redo later
 
+        Debug.Log("Buff created from " + ability.name);
+
         // Make and destroy buff VFX
-        if (fromAbility && fromAbility.VFXSelfBuffPrefab != null)
+        if (ability.name == "WebUp" && ability.VFXSelfBuffPrefab != null)
         {
-            GameObject _vfxWebUp = Instantiate(fromAbility.VFXSelfBuffPrefab, transform.position, transform.rotation);
+            GameObject _vfxWebUp = Instantiate(ability.VFXSelfBuffPrefab, transform.position, transform.rotation);
             _vfxWebUp.transform.parent = transform;
             Destroy(_vfxWebUp, duration);
         }
@@ -620,7 +627,6 @@ public class Unit : MonoBehaviour
     {
         HandleOnHit();
         DealBasicAttackDamage();
-        //DealPhysicalDamage();
     }
     
     void AttackBehavior()
@@ -692,22 +698,26 @@ public class Unit : MonoBehaviour
 
                     if (rollResult > 100-hitChance)
                     {
-                        Debug.Log("Acid Fangs triggered " + abilities[i].name);
-                        int debuffFactor = -1; // Debuff and not buff
+                        int debuffFactor;
+                        //Debug.Log("Acid Fangs triggered " + abilities[i].name);
+                        if (abilities[i].isDebuff) { debuffFactor = -1; } 
+                        else { debuffFactor = 1; }
 
                         // dmg
-                        int _dmgBonus = Mathf.RoundToInt(abilities[i].bonusDamageMightRatio * GetMightStat());
-                        _dmgBonus += Mathf.RoundToInt(abilities[i].bonusDamageMindRatio * GetMindStat());
-                        _dmgBonus += Mathf.RoundToInt(abilities[i].damageOnHit);
-                        int _dmg = Mathf.RoundToInt(_dmgBonus);
+                        int _dmg = Mathf.RoundToInt(
+                            abilities[i].bonusDamageMightRatio * GetMightStat() +
+                            abilities[i].bonusDamageMindRatio * GetMindStat() +
+                            abilities[i].damageOnHit);
 
                         // impact
-                        int _imp = Mathf.RoundToInt(abilities[i].bonusImpactMindRatio * GetMindStat());
-                        _imp += Mathf.RoundToInt(abilities[i].targetBuffAmount);
+                        int _imp = Mathf.RoundToInt(
+                            abilities[i].bonusImpactMindRatio * GetMindStat() +
+                            abilities[i].targetBuffAmount);
 
                         // duration
-                        float _dur = Mathf.RoundToInt(abilities[i].targetBuffDuration);
-                        _dur += Mathf.RoundToInt(abilities[i].bonusDurationRatio * GetMindStat());
+                        float _dur = Mathf.RoundToInt(
+                            abilities[i].targetBuffDuration +
+                            abilities[i].bonusDurationRatio * GetMindStat());
 
                         // Create
                         target.CreateBuff(_imp * debuffFactor, _dur, Buff.Stat.Armor, abilities[i]);
@@ -725,21 +735,27 @@ public class Unit : MonoBehaviour
                 }
                 if (abilities[i].name == "Blinding Strikes")
                 {
-                    int levelIndex = abilities[i].level - 1;
                     float hitChance = abilities[i].chanceToHit + GetChanceToHitBonus(abilities[i].chanceToHitBonusRatio);
                     int rollResult = GetRoll();
                     if (rollResult > 100 - hitChance)
                     {
                         
-                        int damageDealt = Mathf.RoundToInt((abilities[i].bonusDamageMightRatio * GetMightStat()) + abilities[i].damageOnHit);
-                        int debuffImpact = Mathf.RoundToInt((abilities[i].bonusImpactMindRatio * GetMindStat()) + abilities[i].targetBuffAmount);
-                        float duration = (abilities[i].bonusDurationRatio * GetMindStat()) + abilities[i].targetBuffDuration;
+                        int _dmg = Mathf.RoundToInt(
+                            (abilities[i].bonusDamageMightRatio * GetMightStat()) +
+                            (abilities[i].bonusDamageMindRatio * GetMindStat()) +
+                            abilities[i].damageOnHit);
+                        int _imp = Mathf.RoundToInt(
+                            (abilities[i].bonusImpactMindRatio * GetMindStat()) + 
+                            abilities[i].targetBuffAmount);
+                        float _dur = (
+                            (abilities[i].bonusDurationRatio * GetMindStat()) + 
+                            abilities[i].targetBuffDuration);
 
-                        target.CreateBuff(debuffImpact * -1, duration, Buff.Stat.Sense, abilities[i]);
+                        target.CreateBuff(_imp * -1, _dur, Buff.Stat.Sense, abilities[i]);
                         //DealPhysicalDamage(damageDealt);
                         DealBasicAttackDamage();
                         HandleSpell(abilities[i]);
-                        Debug.Log("Blinding Strikes hit for " + damageDealt);
+                        Debug.Log("Blinding Strikes hit for " + _dmg);
 
                         GameObject _anim = Instantiate(abilities[i].targetAnimationPrefab, target.transform.position, target.transform.rotation);
                         Destroy(_anim, 0.8f);

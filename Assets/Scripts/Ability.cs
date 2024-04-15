@@ -48,82 +48,75 @@ public class Ability : ScriptableObject
         Physical,
         True
     }
-
+    public enum AbilType
+    {
+        Passive,
+        Entrance, 
+        OnHit,
+        Spell,
+        Ultimate
+    }
+    public enum BuffTarget
+    {
+        Self,
+        Target
+    }
+    [Header("Core")]
     public new string name;
+    public SpellType spellType;
+    public AbilType abilType;
     public float cooldownTime;
     public float activeTime;
     public float manaToActivate;
-    public int level;
-    public int totalLevels = 3;
 
     public int chanceToHit;
     public int damageOnHit;
 
-    public Projectile projectilePrefab;
+    [Header("Object References")]
     public Unit summonedUnitPrefab;
-    public GameObject VFXSelfBuffPrefab;
-    public GameObject VFXSpecialEffect;
-    public GameObject targetAnimationPrefab;
 
+    [Header("Damage & Basic")]
     public DamageType damageType;
-    public SpellType spellType;
-    public float dmgBoostRatio;
     public int spellDamage;
+    public float duration;
+    public float bonusDurationRatio; // Mind
+    public float dmgBoostRatio;
+    public float bonusDamageMightRatio;
+    public float bonusDamageMindRatio;
+    public float chanceToHitBonusRatio; // Sense
 
+    [Header("Buff Impact")]
+    public BuffTarget buffTarget;
+    public Stat impactStat;
     public int impactAmt;
     public float impactRatio;
     public float impactDamage;
-    public Stat impactStat;
-    public float duration;
-
-    //public float[] chanceToHitBonusRatio; // Sense
-    //public float[] bonusDamageMightRatio;
-    //public float[] bonusDamageMindRatio;
-    //public float[] bonusImpactMightRatio;
-    //public float[] bonusImpactMindRatio;
-    //public float[] bonusDurationRatio; // Mind
-
-    public float chanceToHitBonusRatio; // Sense
-    public float bonusDamageMightRatio;
-    public float bonusDamageMindRatio;
     public float bonusImpactMightRatio;
     public float bonusImpactMindRatio;
-    public float bonusDurationRatio; // Mind
-
-    public Buff.Stat selfBuffStat;
-    ///public int[] selfBuffAmount;
-    //public float[] selfBuffDuration;
-    public Buff.Stat targetBuffStat;
-    //public int[] targetBuffAmount;
-    //public float[] targetBuffDuration;
-    public int selfBuffAmount;
-    public float selfBuffDuration;
+    // Deprecated? // need to redo this with clear head
     public int targetBuffAmount;
     public float targetBuffDuration;
+    public bool isDebuff;
 
-    public Buff.Stat selfBuffStatSecondary;
-    public Buff.Stat selfBuffStatTertiary;
+    [Header("Additional Buffs")]
+    public BuffTarget buffTargetA;
+    public Buff.Stat buffStatA;
+    public int buffAmountA;
+    public float buffDurationA;
+    public bool isDebuffA;
+    public BuffTarget buffTargetB;
+    public Buff.Stat buffStatB;
+    public int buffAmountB;
+    public float buffDurationB;
+    public Buff.Stat buffStatC;
+    public int buffAmountC;
+    public float buffDurationC;
 
-    //public int[] selfBuffAmountSecondary;
-    //public int[] selfBuffAmountTertiary;
-
-    //public float[] selfBuffDurationSecondary;
-    //public float[] selfBuffDurationTertiary;
-
-    public int selfBuffAmountSecondary;
-    public int selfBuffAmountTertiary;
-
-    public float selfBuffDurationSecondary;
-    public float selfBuffDurationTertiary;
-
-    public Buff.Stat targetBuffStatSecondary;
-    public Buff.Stat targetBuffStatTertiary;
-    
-    public int targetBuffAmountSecondary;
-    public int targetBuffAmountTertiary;
-    
-    public float targetBuffDurationSecondary;
-    public float targetBuffDurationTertiary;
+    [Header("VFX & Animations")]
+    public Projectile projectilePrefab;
+    public GameObject VFXSelfBuffPrefab;
+    public GameObject VFXSpecialEffect;
+    public GameObject targetAnimationPrefab;
 
     public virtual void Activate() { }
 

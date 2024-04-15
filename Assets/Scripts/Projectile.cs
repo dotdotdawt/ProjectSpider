@@ -53,9 +53,7 @@ public class Projectile : MonoBehaviour
         {
             if (unit == target)
             {
-                //attacker.DealMagicDamage();
                 attacker.HandleSpell(ability);
-                //attacker.ApplySpellEffect(ability);
                 hitTarget = true;
                 Destroy(gameObject);
             }          

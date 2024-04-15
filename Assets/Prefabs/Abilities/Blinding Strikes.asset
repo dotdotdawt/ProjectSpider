@@ -13,48 +13,45 @@ MonoBehaviour:
   m_Name: Blinding Strikes
   m_EditorClassIdentifier: 
   name: Blinding Strikes
+  spellType: 0
+  abilType: 2
   cooldownTime: 0
   activeTime: 0
   manaToActivate: 0
-  level: 1
-  totalLevels: 3
   chanceToHit: 20
   damageOnHit: 10
-  projectilePrefab: {fileID: 0}
   summonedUnitPrefab: {fileID: 0}
-  VFXSelfBuffPrefab: {fileID: 0}
-  VFXSpecialEffect: {fileID: 0}
-  targetAnimationPrefab: {fileID: 8341037202133500295, guid: 7a080dec07821d54d984a98a70c95ed6, type: 3}
   damageType: 1
-  spellType: 0
-  dmgBoostRatio: 1
   spellDamage: 10
-  impactAmt: 1
-  impactRatio: 1
-  impactDamage: 10
-  impactStat: 0
   duration: 4
-  chanceToHitBonusRatio: 1
+  bonusDurationRatio: 1
+  dmgBoostRatio: 1
   bonusDamageMightRatio: 1
   bonusDamageMindRatio: 1
+  chanceToHitBonusRatio: 1
+  buffTarget: 1
+  impactStat: 7
+  impactAmt: 20
+  impactRatio: 1
+  impactDamage: 10
   bonusImpactMightRatio: 1
   bonusImpactMindRatio: 1
-  bonusDurationRatio: 1
-  selfBuffStat: 0
-  targetBuffStat: 7
-  selfBuffAmount: 0
-  selfBuffDuration: 0
-  targetBuffAmount: 14000000
-  targetBuffDuration: 0
-  selfBuffStatSecondary: 0
-  selfBuffStatTertiary: 0
-  selfBuffAmountSecondary: 0
-  selfBuffAmountTertiary: 0
-  selfBuffDurationSecondary: 0
-  selfBuffDurationTertiary: 0
-  targetBuffStatSecondary: 2
-  targetBuffStatTertiary: 0
-  targetBuffAmountSecondary: 14000000
-  targetBuffAmountTertiary: 0
-  targetBuffDurationSecondary: 0
-  targetBuffDurationTertiary: 0
+  targetBuffAmount: 20
+  targetBuffDuration: 4
+  isDebuff: 1
+  buffTargetA: 1
+  buffStatA: 10
+  buffAmountA: 25
+  buffDurationA: 4
+  isDebuffA: 1
+  buffTargetB: 0
+  buffStatB: 3
+  buffAmountB: 15
+  buffDurationB: 4
+  buffStatC: 0
+  buffAmountC: 0
+  buffDurationC: 0
+  projectilePrefab: {fileID: 0}
+  VFXSelfBuffPrefab: {fileID: 0}
+  VFXSpecialEffect: {fileID: 0}
+  targetAnimationPrefab: {fileID: 8341037202133500295, guid: eeb7827157ca28142916a4dfc8b6cf07, type: 3}
