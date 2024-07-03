@@ -13,6 +13,7 @@ public enum Team
     Enemy
 }
 
+// For floating text on hit/damage
 public enum TextType
 {
     Physical,
@@ -22,6 +23,7 @@ public enum TextType
     Critical
 }
 
+// Used for abilities to handle how damage is done
 public enum TargetType
 {
     Self,
@@ -34,11 +36,25 @@ public enum TargetType
 
 public class Unit : MonoBehaviour
 {
-    // Public Actions
     public event Action OnDeath;
     public event Action OnCreate;
-
     public string unitName;
+
+    [Header("Object References")]
+    public Rigidbody2D rb;
+    public HealthBar healthBar;
+    public GameObject floatingTextPrefab;
+    public GameObject floatingTextMagicPrefab;
+    public GameObject floatingTextCritPrefab;
+    public Buff buffPrefab;
+    public Unit target;
+    public Team team;
+    public Unit summonedUnitPrefab;
+    public Projectile projectilePrefab;
+    public Ability[] abilities;
+    public List<Buff> buffs = new List<Buff>();
+    //public Color physicalDamageColor;
+    //public Color magicalDamageColor;
 
     [Header("Unit Stats")]
     public int level;
@@ -61,57 +77,22 @@ public class Unit : MonoBehaviour
     public int armor;
     public int magicResist;
 
-    public int bonusMight;
-    public int bonusMind;
-    public int bonusFortitude;
-    public int bonusAgility;
-    public int bonusVitality;
-    public int bonusSpirit;
-    public int bonusSense;
-    public int bonusSpeed;
-    public float bonusWisdom;
-
     [Header("Constants AD, Armor and Agility Calculation")]
     public float baseAttackTime = 2f; // 2 seconds
-    public float agilityAttackSpeedConstant = 2f; // 2%
-    public float wisdomCastSpeedConstant = 2f;
-    public float timeSinceLastAttack = Mathf.Infinity;
-    public float timeSinceLastCast = Mathf.Infinity;
-    public float attackSpeed = 0.9f; // deprecated
-
-    public int baseAttackDamageConstant = 24; // base + might
-    public int baseHealthConstant = 225;
-    public int baseVitalityConstant = 25;
-    public int baseArmorConstant = 5;
-    public int baseMagicResistConstant = 5;
-    public int baseSpellPowerConstant = 10;
-    public float baseCastingTime = 1f;
-    // Summoned units should have base health 50 and base damage 10
-    public float minimumMoveSpeedConstant = 2f;
+    public float agilityAttackSpeedConstant = 2f; // 2% AS added for each agi
+    public float wisdomCastSpeedConstant = 2f; // Adjust later
+    public int baseAttackDamageConstant = 10; // base attack damage of all creatures
+    public int baseHealthConstant = 150; // base hp
+    public int baseVitalityConstant = 25; // HP per vitality
+    public int baseArmorConstant = 5; // base armor of all creatures
+    public int baseMagicResistConstant = 5; // base MR
+    public int baseSpellPowerConstant = 10; // base Spell Power
+    public float baseCastingTime = 1f; // HALF OF AS??
+    public float minimumMoveSpeedConstant = 2f; // Hard cap
     public float maximumMoveSpeedConstant = 8f;
-    public float speedPerPointConstant = 1f;
-    public float baseMoveSpeedConstant = 3f;
-    public int baseSizeMultiplier;
-    //public int baseSizeMultiplier = 1;
-
-    [Header("Static Object References")]
-    public Rigidbody2D rb;
-    public HealthBar healthBar;
-    public GameObject floatingTextPrefab;
-    public GameObject floatingTextMagicPrefab;
-    public GameObject floatingTextCritPrefab;
-    public Buff buffPrefab;
-
-    [Header("Object References")]
-    public Unit target;
-    public Team team;
-    public Unit summonedUnitPrefab;
-    public Projectile projectilePrefab;
-    public Ability[] abilities;
-    public List<Buff> buffs = new List<Buff>();
-
-    public Color physicalDamageColor;
-    public Color magicalDamageColor;
+    public float speedPerPointConstant = 1f; // 1% MS increase per speed
+    public float baseMoveSpeedConstant = 3f; // base MS before changes
+    public int baseSizeMultiplier; // Might need to do later
 
     [Header("Boolean Toggles")]
     public bool initAbility;
@@ -120,26 +101,38 @@ public class Unit : MonoBehaviour
     public bool canAttack = true;
     public bool untargetable = false;
 
-
-    private int vibrato = 7;
-    private float elasticity = 0.81f;
-    private bool snapping = false;
-    private float tamperAttackVector = 0.21f;
-    private float tamperAS = 0.3f;
-    private float rangedTamper = 0.18f;
+    // Used by buffs and debuffs and abilities to calculate changes to stats
+    private int bonusMight;
+    private int bonusMind;
+    private int bonusFortitude;
+    private int bonusAgility;
+    private int bonusVitality;
+    private int bonusSpirit;
+    private int bonusSense;
+    private int bonusSpeed;
+    private float bonusWisdom; // ONLY ONE THATS FLOAT
+    private float timeSinceLastAttack = Mathf.Infinity;
+    private float timeSinceLastCast = Mathf.Infinity;
+    private GameManager gm = null;
 
     public void Awake()
     {
-        FindObjectOfType<GameManager>().AddUnit(this);
+        gm = FindObjectOfType<GameManager>();
+        gm.AddUnit(this); // Find the static game manager
     }
 
     public void Start()
     {
+        this.alive = true;
         rb = GetComponent<Rigidbody2D>(); // necessary?
         maxHealth = GetMaxHealth();
-        currentHealth = maxHealth;
+        FullHeal();
         healthBar.SetMaxHealth(maxHealth);
-        this.alive = true;
+    }
+
+    private void FullHeal()
+    {
+        currentHealth = maxHealth;
     }
 
     public int GetMaxHealth()
@@ -219,37 +212,25 @@ public class Unit : MonoBehaviour
         TextType _txt = TextType.Physical; // default
 
         // Target Types
-        if (ability.spellType == Ability.SpellType.Target) // Single target ability magic
-        {
-            _tgt = target;
-        }
-        if (ability.spellType == Ability.SpellType.Self) // Self only target
-        {
-            _tgt = this;
-        }
+        if (ability.spellType == Ability.SpellType.Target) _tgt = target;
+        if (ability.spellType == Ability.SpellType.Self)  _tgt = this;
 
         // Damage Types
         if (ability.damageType == Ability.DamageType.Magical) // Magic
         {
             _dmg = Mathf.RoundToInt(
-                GetMagicReducedDamage(
-                    ability.spellDamage + 
-                    (ability.dmgBoostRatio * _tgt.GetMindStat()
-                    )));
+                GetMagicReducedDamage(ability.spellDamage + (ability.dmgBoostRatio * GetMindStat())));
             _txt = TextType.Magical;
         }
         if (ability.damageType == Ability.DamageType.Physical) // Physical
         {
-            _dmg = Mathf.RoundToInt(GetArmorReducedDamage(ability.spellDamage + (ability.dmgBoostRatio * _tgt.GetMightStat())));
+            _dmg = Mathf.RoundToInt(GetArmorReducedDamage(ability.spellDamage + (ability.dmgBoostRatio * GetMightStat())));
             _txt = TextType.Physical;
         }
 
-        // Deal it
         DealDamageToTarget(_dmg, _tgt, _txt);
         ApplySpellEffect(ability, _tgt);
     }
-
-
 
     public float GetRawMovementSpeed()
     {
@@ -293,50 +274,9 @@ public class Unit : MonoBehaviour
         spTarget.healthBar.SetHealth(spTarget.currentHealth);
     }
     
-
     public void StatsUpdate()
     {
         rawMoveSpeed = GetRawMovementSpeed();
-    }
-
-    public void ShowFloatingText(int damage, TextType textType) // Lots of DOTween customization... if can be made shorter, do it.
-    {
-        GameObject _pfb = null;
-        if (textType == TextType.Physical)
-        {
-            _pfb = floatingTextPrefab;
-        }
-        if (textType == TextType.Magical)
-        {
-            _pfb = floatingTextMagicPrefab;
-        }
-        if (textType == TextType.Critical)
-        {
-            _pfb = floatingTextCritPrefab;
-        }
-
-        if (_pfb != null)
-        {
-            Vector3 spawnLoc;
-            double _rx = target.transform.position.x + (UnityEngine.Random.Range(-1, 1) * 0.1);
-            double _ry = target.transform.position.y + (UnityEngine.Random.Range(-1, 1) * 0.1);
-            spawnLoc.x = System.Convert.ToSingle(_rx);
-            spawnLoc.y = System.Convert.ToSingle(_ry);
-            spawnLoc.z = target.transform.position.z;
-            var fText = Instantiate(_pfb, spawnLoc, Quaternion.identity, target.transform);
-            fText.GetComponent<TextMeshPro>().text = damage.ToString();
-
-            // moving
-            fText.transform.DOMoveY((fText.transform.position.y + 1), 1f).SetEase(Ease.InSine);
-            var sequence = DOTween.Sequence();
-            double _x = fText.transform.localScale.x * 4;
-            double _y = fText.transform.localScale.y * 4;
-            sequence.Append(fText.transform.DOScaleX(Math.Abs(System.Convert.ToSingle(_x)), 0.8f).SetEase(Ease.InOutSine));
-            sequence.Join(fText.transform.DOScaleY(Math.Abs(System.Convert.ToSingle(_y)), 0.8f).SetEase(Ease.InOutSine));
-            sequence.Append(fText.transform.DOScaleX(0, 0.8f).SetEase(Ease.InOutSine));
-            sequence.Join(fText.transform.DOScaleY(0, 0.8f).SetEase(Ease.InOutSine));
-        }
-        
     }
 
     private bool InAttackRangeOfTarget()
@@ -357,20 +297,6 @@ public class Unit : MonoBehaviour
         return Vector2.Distance(transform.position, target.transform.position) <= Math.Abs(castRange);
     }
 
-    private void PunchAnimation()
-    {
-        if (range >= 1.5f * baseSizeMultiplier) // is ranged
-        {
-            transform.DOPunchPosition(target.transform.position * tamperAttackVector - transform.position * tamperAttackVector * rangedTamper, 
-                attackSpeed * tamperAS * rangedTamper, vibrato, elasticity * rangedTamper, snapping);
-        }
-        else // is not ranged
-        {
-            transform.DOPunchPosition(target.transform.position * tamperAttackVector - transform.position * tamperAttackVector, 
-                attackSpeed * tamperAS, vibrato, elasticity, snapping);
-        }
-    }
-
     public float GetAttackSpeedTimer()
     {
         int bonuses = 0;
@@ -387,14 +313,11 @@ public class Unit : MonoBehaviour
 
     public void HandleBuffs()
     {
-        if (!battleStarted) return;
+        if (!battleStarted) return; // Wait for battle to be active
 
         for (int i = 0; i < buffs.Count; i++)
         {
-            if (buffs[i] == null) 
-            {
-                return;
-            }
+            if (buffs[i] == null) return;
             if (buffs[i] != null)
             {
                 if (!buffs[i].active)
@@ -525,64 +448,57 @@ public class Unit : MonoBehaviour
         }
     }
 
-
-
     IEnumerator WebUp(Ability abilityInstance) // Ability
     {
-        if (target != null)
-        {
-            // Start the animations
-            Debug.Log("WebUp started.");
-            canAttack = false;
-            untargetable = true;
+        if (target == null) gm.GetFurthestTarget(this);
 
-            // strand
-            //GameObject webUpStrand = GameObject.FindWithTag("AbilityCosmetic");
-            GameObject webUpStrand = Instantiate(abilityInstance.VFXSpecialEffect, transform.position, transform.rotation);
-            webUpStrand.transform.parent = transform;
-            webUpStrand.SetActive(true);
-            webUpStrand.transform.position = new Vector3(webUpStrand.transform.position.x, webUpStrand.transform.position.y + 8, webUpStrand.transform.position.z);
-            Destroy(webUpStrand, 5);
+        // Start the animations
+        Debug.Log("WebUp started.");
+        canAttack = false;
+        untargetable = true;
 
-            // buff
-            CreateBuff(30, 5f, Buff.Stat.Might, abilityInstance);
-            CreateBuff(50, 5f, Buff.Stat.Speed, abilityInstance);
-            StatsUpdate();
+        // strand
+        //GameObject webUpStrand = GameObject.FindWithTag("AbilityCosmetic");
+        GameObject webUpStrand = Instantiate(abilityInstance.VFXSpecialEffect, transform.position, transform.rotation);
+        webUpStrand.transform.parent = transform;
+        webUpStrand.SetActive(true);
+        webUpStrand.transform.position = new Vector3(webUpStrand.transform.position.x, webUpStrand.transform.position.y + 8, webUpStrand.transform.position.z);
+        Destroy(webUpStrand, 5);
 
-            // animation
-            float xOffset = 1.5f;
-            int newX = Mathf.RoundToInt(xOffset + target.transform.position.x);
-            var sequence = DOTween.Sequence();
-            sequence.Append(transform.DOMoveY(7, 0.6f));
-            sequence.Append(transform.DOMoveX(newX, 0.1f));
-            sequence.Append(transform.DOMoveY(target.transform.position.y, 0.6f));
+        // buff
+        CreateBuff(30, 5f, Buff.Stat.Might, abilityInstance);
+        CreateBuff(50, 5f, Buff.Stat.Speed, abilityInstance);
+        StatsUpdate();
 
-            // Waiting and return to normal state
-            yield return new WaitForSeconds(1.1f);
-            webUpStrand.transform.DOMoveY(20, 3f);
-            FlipSprite();
-            untargetable = false;
-            canAttack = true;
-        }
+        // animation
+        float xOffset = 1.5f;
+        int newX = Mathf.RoundToInt(xOffset + target.transform.position.x);
+        var sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMoveY(7, 0.6f));
+        sequence.Append(transform.DOMoveX(newX, 0.1f));
+        sequence.Append(transform.DOMoveY(target.transform.position.y, 0.6f));
+
+        // Waiting and return to normal state
+        yield return new WaitForSeconds(1.1f);
+        webUpStrand.transform.DOMoveY(20, 3f);
+        FlipSprite();
+        untargetable = false;
+        canAttack = true;
     }
 
     public void ApplySpellEffect(Ability ability, Unit fxTarget)
     {
         Debug.Log("ApplyingSpellEffect from ability" + ability.name);
-        //target.CreateBuff(-40, 5, Buff.Stat.Speed, fromAbility);
-        //target.CreateBuff(-20, 5, Buff.Stat.Armor, fromAbility);
-        int statAmt = GetMindStat();
-        float bonusAmt = ability.impactRatio * statAmt;
-        int _amt = Mathf.RoundToInt(ability.impactAmt + bonusAmt);
-        //float _amt = ability.impactAmt + Mathf.RoundToInt((ability.impactRatio * GetMindStat())); // negative number
 
-        float _dur = ability.duration;
-        //float _dur = ability.duration + Mathf.RoundToInt((ability.bonusDurationRatio * GetMindStat()));
-
-        Buff.Stat _stat = Buff.Stat.Fortitude;
-        //Stat _stat = ability.impactStat;
-
-        fxTarget.CreateBuff(_amt, _dur, _stat, ability);
+        if (ability.useBuffs)
+        {
+            int statAmt = GetMindStat();
+            float bonusAmt = ability.impactRatio * statAmt;
+            int _amt = Mathf.RoundToInt(ability.impactAmt + bonusAmt);
+            float _dur = ability.duration;
+            Buff.Stat _stat = ability.buffStatA;
+            fxTarget.CreateBuff(_amt, _dur, _stat, ability);
+        }
     }
 
     public void LaunchAbilityProjectile(Projectile projectilePrefab, Ability fromAbility) // Just makes the projectile and sends it
@@ -609,7 +525,6 @@ public class Unit : MonoBehaviour
         if (target != null)
         {
             mana = 0;
-            //Unit summonedUnit = Instantiate(unitPrefab, transform.position, transform.rotation);
             Unit summonedUnit = Instantiate(summonedUnitPrefab, transform.position, transform.rotation);
             summonedUnit.transform.position = transform.position;
             summonedUnit.team = team;
@@ -625,21 +540,21 @@ public class Unit : MonoBehaviour
   
     public void Hit()
     {
+        mana += 1;
+        timeSinceLastAttack = 0f;
         HandleOnHit();
         DealBasicAttackDamage();
     }
     
     void AttackBehavior()
     {
-        if (!canAttack) { return; }
+        if (!canAttack) return;
         if (target.team == this.team) return;
         if (!target.alive)
         {
             target = null;
             return;
         }
-        mana += 1;
-        timeSinceLastAttack = 0f;
         if (range >= 1.5f * baseSizeMultiplier)
         {
             RangedAttack();
@@ -656,6 +571,7 @@ public class Unit : MonoBehaviour
     {
         if (target != null)
         {
+            mana += 1;
             timeSinceLastAttack = 0f;
             Projectile projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
             projectile.transform.position = transform.position;
@@ -666,7 +582,7 @@ public class Unit : MonoBehaviour
 
     public void FindNearestTarget()
     {
-        FindObjectOfType<GameManager>().GetClosestTarget(this);
+        gm.GetClosestTarget(this);
     }
 
     public void SetTarget(Unit newTarget)
@@ -690,7 +606,7 @@ public class Unit : MonoBehaviour
         {
             if (abilities[i] != null)
             {
-                if (abilities[i].name == "Acid Fangs")
+                if (abilities[i].name == "Acid Fangs" || abilities[i].name == "Blinding Strikes")
                 {
                     float bonusChance = GetChanceToHitBonus(abilities[i].chanceToHitBonusRatio);
                     float hitChance = abilities[i].chanceToHit + bonusChance;
@@ -700,8 +616,8 @@ public class Unit : MonoBehaviour
                     {
                         int debuffFactor;
                         //Debug.Log("Acid Fangs triggered " + abilities[i].name);
-                        if (abilities[i].isDebuff) { debuffFactor = -1; } 
-                        else { debuffFactor = 1; }
+                        if (abilities[i].isDebuff) debuffFactor = -1;
+                        else debuffFactor = 1;
 
                         // dmg
                         int _dmg = Mathf.RoundToInt(
@@ -720,47 +636,20 @@ public class Unit : MonoBehaviour
                             abilities[i].bonusDurationRatio * GetMindStat());
 
                         // Create
-                        target.CreateBuff(_imp * debuffFactor, _dur, Buff.Stat.Armor, abilities[i]);
+                        target.CreateBuff(_imp * debuffFactor, _dur, abilities[i].buffStatA, abilities[i]);
+                        //target.CreateBuff(_imp * debuffFactor, _dur, Buff.Stat.Armor, abilities[i]);
+                        //target.CreateBuff(_imp * -1, _dur, Buff.Stat.Sense, abilities[i]);
 
                         // Handlers
                         DealBasicAttackDamage(_dmg);
                         HandleSpell(abilities[i]);
 
                         // x
-                        Debug.Log("Acid Fangs hit for " + _dmg);
+                        Debug.Log("" + abilities[i].name + "hit for " + _dmg);
                         GameObject _anim = Instantiate(abilities[i].targetAnimationPrefab, target.transform.position, target.transform.rotation);
                         Destroy(_anim, 0.8f);
 
                     }
-                }
-                if (abilities[i].name == "Blinding Strikes")
-                {
-                    float hitChance = abilities[i].chanceToHit + GetChanceToHitBonus(abilities[i].chanceToHitBonusRatio);
-                    int rollResult = GetRoll();
-                    if (rollResult > 100 - hitChance)
-                    {
-                        
-                        int _dmg = Mathf.RoundToInt(
-                            (abilities[i].bonusDamageMightRatio * GetMightStat()) +
-                            (abilities[i].bonusDamageMindRatio * GetMindStat()) +
-                            abilities[i].damageOnHit);
-                        int _imp = Mathf.RoundToInt(
-                            (abilities[i].bonusImpactMindRatio * GetMindStat()) + 
-                            abilities[i].targetBuffAmount);
-                        float _dur = (
-                            (abilities[i].bonusDurationRatio * GetMindStat()) + 
-                            abilities[i].targetBuffDuration);
-
-                        target.CreateBuff(_imp * -1, _dur, Buff.Stat.Sense, abilities[i]);
-                        //DealPhysicalDamage(damageDealt);
-                        DealBasicAttackDamage();
-                        HandleSpell(abilities[i]);
-                        Debug.Log("Blinding Strikes hit for " + _dmg);
-
-                        GameObject _anim = Instantiate(abilities[i].targetAnimationPrefab, target.transform.position, target.transform.rotation);
-                        Destroy(_anim, 0.8f);
-                    }
-
                 }
             }
         }
@@ -832,7 +721,69 @@ public class Unit : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
-    
+
+    public void ShowFloatingText(int damage, TextType textType) // Lots of DOTween customization... if can be made shorter, do it.
+    {
+        GameObject _pfb = null;
+        if (textType == TextType.Physical)
+        {
+            _pfb = floatingTextPrefab;
+        }
+        if (textType == TextType.Magical)
+        {
+            _pfb = floatingTextMagicPrefab;
+        }
+        if (textType == TextType.Critical)
+        {
+            _pfb = floatingTextCritPrefab;
+        }
+
+        if (_pfb != null)
+        {
+            Vector3 spawnLoc;
+            double _rx = target.transform.position.x + (UnityEngine.Random.Range(-1, 1) * 0.1);
+            double _ry = target.transform.position.y + (UnityEngine.Random.Range(-1, 1) * 0.1);
+            spawnLoc.x = System.Convert.ToSingle(_rx);
+            spawnLoc.y = System.Convert.ToSingle(_ry);
+            spawnLoc.z = target.transform.position.z;
+            var fText = Instantiate(_pfb, spawnLoc, Quaternion.identity, target.transform);
+            fText.GetComponent<TextMeshPro>().text = damage.ToString();
+
+            // moving
+            fText.transform.DOMoveY((fText.transform.position.y + 1), 1f).SetEase(Ease.InSine);
+            var sequence = DOTween.Sequence();
+            double _x = fText.transform.localScale.x * 4;
+            double _y = fText.transform.localScale.y * 4;
+            sequence.Append(fText.transform.DOScaleX(Math.Abs(System.Convert.ToSingle(_x)), 0.8f).SetEase(Ease.InOutSine));
+            sequence.Join(fText.transform.DOScaleY(Math.Abs(System.Convert.ToSingle(_y)), 0.8f).SetEase(Ease.InOutSine));
+            sequence.Append(fText.transform.DOScaleX(0, 0.8f).SetEase(Ease.InOutSine));
+            sequence.Join(fText.transform.DOScaleY(0, 0.8f).SetEase(Ease.InOutSine));
+        }
+
+    }
+
+    private void PunchAnimation()
+    {
+        int vibrato = 7;
+        float elasticity = 0.81f;
+        bool snapping = false;
+        float tamperAttackVector = 0.21f;
+        float tamperAS = 0.3f;
+        float rangedTamper = 0.33f;
+        // 21% * target - self 21% * 18%, 0.9 * 0.3 * .18, 
+        // 7, 0.81f (*.18), false
+        if (range >= 1.5f * baseSizeMultiplier) // is ranged
+        {
+            transform.DOPunchPosition(target.transform.position * tamperAttackVector - transform.position * tamperAttackVector * rangedTamper,
+                0.9f * tamperAS * rangedTamper, vibrato, elasticity * rangedTamper, snapping);
+        }
+        else // is not ranged
+        {
+            transform.DOPunchPosition(target.transform.position * tamperAttackVector - transform.position * tamperAttackVector,
+                0.9f * tamperAS, vibrato, elasticity, snapping);
+        }
+    }
+
     public void Update()
     {
         HandleBuffs();
@@ -840,15 +791,8 @@ public class Unit : MonoBehaviour
         if (!alive) Destroy(gameObject); // destroy game object if it was missed
         CheckDeath(); // OnDeath event
         if (initAbility) HandleStartAbilities(); // engage abilities
-        if (InCastRangeOfTarget() && timeSinceLastAttack >= GetCastTimer()) // casting time attack time figure this out
-        {
-            HandleAbilities(); // mana abilities
-        }
-        if (InAttackRangeOfTarget() && timeSinceLastAttack >= GetAttackSpeedTimer()) // basic attacks and attack speed
-        {
-            AttackBehavior();
-        }
-        
+        if (InCastRangeOfTarget() && timeSinceLastAttack >= GetCastTimer()) HandleAbilities(); // mana abilities
+        if (InAttackRangeOfTarget() && timeSinceLastAttack >= GetAttackSpeedTimer()) AttackBehavior();
         timeSinceLastAttack += Time.deltaTime;
     }
 
@@ -858,10 +802,7 @@ public class Unit : MonoBehaviour
         if (!this.alive) return;
         if (target != null)
         {
-            if (target.untargetable)
-            {
-                FindNearestTarget();
-            }
+            if (target.untargetable) FindNearestTarget();
             Vector2 direction = target.transform.position - transform.position;
             float distance = Vector2.Distance(transform.position, target.transform.position);
             if (!InAttackRangeOfTarget()) transform.position = Vector2.MoveTowards(this.transform.position, target.transform.position, rawMoveSpeed * Time.deltaTime);

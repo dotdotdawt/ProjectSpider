@@ -68,6 +68,7 @@ public class Ability : ScriptableObject
     public float cooldownTime;
     public float activeTime;
     public float manaToActivate;
+    public bool useBuffs = false;
 
     public int chanceToHit;
     public int damageOnHit;
@@ -89,6 +90,7 @@ public class Ability : ScriptableObject
     public BuffTarget buffTarget;
     public Stat impactStat;
     public int impactAmt;
+    public int impNegative = -1;
     public float impactRatio;
     public float impactDamage;
     public float bonusImpactMightRatio;
