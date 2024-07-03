@@ -18,6 +18,7 @@ MonoBehaviour:
   cooldownTime: 0
   activeTime: 0
   manaToActivate: 0
+  useBuffs: 1
   chanceToHit: 15
   damageOnHit: 20
   summonedUnitPrefab: {fileID: 0}
@@ -32,6 +33,7 @@ MonoBehaviour:
   buffTarget: 1
   impactStat: 4
   impactAmt: 20
+  impNegative: -1
   impactRatio: 1
   impactDamage: 20
   bonusImpactMightRatio: 0
@@ -39,8 +41,8 @@ MonoBehaviour:
   targetBuffAmount: 20
   targetBuffDuration: 5
   isDebuff: 1
-  buffTargetA: 0
-  buffStatA: 0
+  buffTargetA: 1
+  buffStatA: 4
   buffAmountA: 0
   buffDurationA: 0
   isDebuffA: 0

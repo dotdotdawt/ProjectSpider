@@ -13,49 +13,47 @@ MonoBehaviour:
   m_Name: WebUp
   m_EditorClassIdentifier: 
   name: WebUp
+  spellType: 0
+  abilType: 1
   cooldownTime: 20
   activeTime: 0
   manaToActivate: 0
-  level: 1
-  totalLevels: 3
+  useBuffs: 1
   chanceToHit: 0
   damageOnHit: 0
-  projectilePrefab: {fileID: 0}
   summonedUnitPrefab: {fileID: 0}
+  damageType: 0
+  spellDamage: 0
+  duration: 0
+  bonusDurationRatio: 0
+  dmgBoostRatio: 0
+  bonusDamageMightRatio: 0
+  bonusDamageMindRatio: 0
+  chanceToHitBonusRatio: 0
+  buffTarget: 0
+  impactStat: 0
+  impactAmt: 0
+  impNegative: -1
+  impactRatio: 0
+  impactDamage: 0
+  bonusImpactMightRatio: 0
+  bonusImpactMindRatio: 0
+  targetBuffAmount: 0
+  targetBuffDuration: 0
+  isDebuff: 0
+  buffTargetA: 0
+  buffStatA: 0
+  buffAmountA: 0
+  buffDurationA: 0
+  isDebuffA: 0
+  buffTargetB: 0
+  buffStatB: 0
+  buffAmountB: 0
+  buffDurationB: 0
+  buffStatC: 0
+  buffAmountC: 0
+  buffDurationC: 0
+  projectilePrefab: {fileID: 0}
   VFXSelfBuffPrefab: {fileID: 2261740608863778754, guid: 3d45473eac0231242b3abf8ad604b693, type: 3}
   VFXSpecialEffect: {fileID: 6270314280029147329, guid: 9d5a9b07208563e4588618e4bff39757, type: 3}
   targetAnimationPrefab: {fileID: 0}
-  damageType: 0
-  spellType: 0
-  abilType: 1
-  dmgBoostRatio: 0
-  spellDamage: 0
-  impactAmt: 0
-  impactRatio: 0
-  impactDamage: 0
-  impactStat: 0
-  duration: 0
-  chanceToHitBonusRatio: 0
-  bonusDamageMightRatio: 0
-  bonusDamageMindRatio: 0
-  bonusImpactMightRatio: 0
-  bonusImpactMindRatio: 0
-  bonusDurationRatio: 0
-  selfBuffStat: 0
-  targetBuffStat: 0
-  selfBuffAmount: 0
-  selfBuffDuration: 0
-  targetBuffAmount: 0
-  targetBuffDuration: 0
-  selfBuffStatSecondary: 0
-  selfBuffStatTertiary: 0
-  selfBuffAmountSecondary: 0
-  selfBuffAmountTertiary: 0
-  selfBuffDurationSecondary: 0
-  selfBuffDurationTertiary: 0
-  targetBuffStatSecondary: 0
-  targetBuffStatTertiary: 0
-  targetBuffAmountSecondary: 0
-  targetBuffAmountTertiary: 0
-  targetBuffDurationSecondary: 0
-  targetBuffDurationTertiary: 0

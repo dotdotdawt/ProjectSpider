@@ -7,27 +7,19 @@ using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
-    //public Unit[] units = null;
-    public List<Unit> units = new List<Unit>();
-    public static GameManager Instance;
+    public List<Unit> units = new List<Unit>(); // All units that are alive are in here
+    public static GameManager Instance; // Static instance so fucking useful
 
     void Awake()
     {
-        Instance = this;
+        Instance = this; // magic
     }
 
     void UnitDied(Unit unit)
     {
+        Debug.Log("Ran unit died with unit" + unit.name);
         units.Remove(unit);
         SetupAllTargets();
-        //SetupUnits();
-    }
-
-    void UnitCreated(Unit unit)
-    {
-        //units.Append(unit);
-        //units.Add(unit);
-        GetClosestTarget(unit);
     }
 
     public void AddUnit(Unit unit)
@@ -37,9 +29,7 @@ public class GameManager : MonoBehaviour
             units.Add(unit);
             GetClosestTarget(unit);
             unit.OnDeath += () => UnitDied(unit);
-            unit.OnCreate += () => UnitCreated(unit);
         }
-        
     }
 
     public void StartBattle()
@@ -53,7 +43,6 @@ public class GameManager : MonoBehaviour
 
     void SetupUnits()
     {
-        // the bug is right here
         foreach (Unit unit in units)
         {
             AddUnit(unit);

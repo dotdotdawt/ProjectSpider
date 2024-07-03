@@ -2561,8 +2561,40 @@ PrefabInstance:
     m_TransformParent: {fileID: 1342362861}
     m_Modifications:
     - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: mind
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
       propertyPath: team
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: might
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: sense
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: spirit
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: wisdom
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: agility
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: vitality
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -1461440454047607334, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: fortitude
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2121699777405033642, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
       propertyPath: m_Name
@@ -2591,6 +2623,14 @@ PrefabInstance:
     - target: {fileID: 2498551917377368130, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
       propertyPath: m_RootOrder
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498551917377368130, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.165
+      objectReference: {fileID: 0}
+    - target: {fileID: 2498551917377368130, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.1725
       objectReference: {fileID: 0}
     - target: {fileID: 2498551917377368130, guid: e075379cb09c4134e97e314d8dff2934, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7202,6 +7242,10 @@ PrefabInstance:
     - target: {fileID: 6423909196547016993, guid: 49aa98c65eb3b6945a4c7e18f628686d, type: 3}
       propertyPath: m_Name
       value: PlantLion
+      objectReference: {fileID: 0}
+    - target: {fileID: 6423909196547016993, guid: 49aa98c65eb3b6945a4c7e18f628686d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7420567068969952713, guid: 49aa98c65eb3b6945a4c7e18f628686d, type: 3}
       propertyPath: m_RootOrder
